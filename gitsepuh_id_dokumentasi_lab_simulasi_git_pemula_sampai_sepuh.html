@@ -1,0 +1,3004 @@
+<!DOCTYPE html>
+<html lang="id" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitSepuh.id — Dokumentasi & Lab Simulasi Git (Pemula sampai Sepuh)</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            obsidian: '#090d16',
+            carddark: '#111827',
+            borderdark: '#1e293b',
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 3.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-8px)' },
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Base Obsidian Styling & Custom Scrollbar */
+    body {
+      background-color: #090d16;
+      color: #f8fafc;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    /* Subtle Tech Grid Background */
+    .bg-grid-obsidian {
+      background-size: 38px 38px;
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    }
+
+    /* Glassmorphism Card */
+    .glass-card {
+      background: rgba(17, 24, 39, 0.88);
+      backdrop-filter: blur(14px);
+      border: 1px solid #1e293b;
+    }
+
+    .card-lift {
+      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.22s ease, box-shadow 0.22s ease;
+    }
+    .card-lift:hover {
+      transform: translateY(-3px);
+      border-color: rgba(16, 185, 129, 0.45);
+      box-shadow: 0 12px 28px -10px rgba(16, 185, 129, 0.18);
+    }
+
+    /* SVG Animated Flow Line */
+    .svg-flow-line {
+      stroke-dasharray: 8 6;
+      animation: flowDash 18s linear infinite;
+    }
+    @keyframes flowDash {
+      from { stroke-dashoffset: 320; }
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* Node Pulse Ring */
+    .node-ring {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: pingRing 2.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    @keyframes pingRing {
+      0% { transform: scale(1); opacity: 0.75; }
+      75%, 100% { transform: scale(2.1); opacity: 0; }
+    }
+
+    /* Flying Packet in 4-Zone Simulator */
+    #flying-packet {
+      pointer-events: none;
+    }
+
+    /* Fade Up Animation */
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-fade-up {
+      animation: fadeSlideUp 0.28s ease-out forwards;
+    }
+
+    /* Drawer Slide Transition */
+    #panic-drawer-panel {
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  </style>
+</head>
+<body class="font-sans antialiased selection:bg-emerald-500/30 selection:text-emerald-200 bg-grid-obsidian">
+
+  <!-- Toast Notification Container (Replaces browser alert()) -->
+  <div id="toast-container" class="fixed top-20 right-4 sm:right-6 z-50 flex flex-col gap-2 max-w-xs sm:max-w-sm pointer-events-none"></div>
+
+  <!-- ===================================================================== -->
+  <!-- 1. STICKY TOP NAVBAR + MOBILE HAMBURGER MENU -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-[#090d16]/85 border-b border-[#1e293b]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Brand Logo -->
+        <a href="#" class="flex items-center gap-3 group">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 via-cyan-500 to-purple-500 p-[1px] shadow-lg shadow-emerald-500/20">
+            <div class="w-full h-full bg-[#090d16] rounded-[11px] flex items-center justify-center group-hover:bg-transparent transition-colors">
+              <i data-lucide="git-branch" class="w-5 h-5 text-emerald-400 group-hover:text-white transition-colors"></i>
+            </div>
+          </div>
+          <div>
+            <span class="font-extrabold text-lg tracking-tight text-white">Git<span class="text-emerald-400">Sepuh</span><span class="text-cyan-400">.id</span></span>
+            <span class="hidden xl:inline-block ml-2 text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#111827] text-slate-400 border border-[#1e293b]">Docs &amp; Error Lab</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center gap-1 text-sm font-medium">
+          <a href="#lab-error" class="px-3 py-2 rounded-xl text-slate-300 hover:text-rose-400 hover:bg-rose-500/10 transition flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+            Lab Error (13)
+          </a>
+          <a href="#ensiklopedia-flag" class="px-3 py-2 rounded-xl text-slate-300 hover:text-amber-400 hover:bg-amber-500/10 transition">Arti Flag (- &amp; --)</a>
+          <a href="#simulator-zona" class="px-3 py-2 rounded-xl text-slate-300 hover:text-cyan-400 hover:bg-slate-800/60 transition">4 Zona Git</a>
+          <a href="#sandbox-branch" class="px-3 py-2 rounded-xl text-slate-300 hover:text-purple-400 hover:bg-slate-800/60 transition">Branch &amp; Rebase</a>
+          <a href="#kamus-perintah" class="px-3 py-2 rounded-xl text-slate-300 hover:text-emerald-400 hover:bg-slate-800/60 transition">Kamus (40)</a>
+          <button onclick="openPanicDrawer()" class="ml-2 px-4 py-2 rounded-xl bg-rose-500/15 text-rose-300 border border-rose-500/35 hover:bg-rose-500/25 transition flex items-center gap-1.5 font-bold cursor-pointer">
+            <span>🚨</span> Tombol Panik!
+          </button>
+        </nav>
+
+        <!-- Mobile Menu Toggle -->
+        <button id="mobile-menu-btn" aria-label="Buka Menu" class="lg:hidden p-2.5 rounded-xl bg-[#111827] border border-[#1e293b] text-slate-300 hover:text-white cursor-pointer">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-[#1e293b] bg-[#090d16]/95 px-4 pt-3 pb-4 space-y-2">
+      <a href="#lab-error" class="mobile-nav-link block px-3.5 py-2.5 rounded-xl text-rose-300 bg-rose-500/10 border border-rose-500/20 font-semibold">🧪 Simulator Error Git &amp; Penyebabnya (13)</a>
+      <a href="#ensiklopedia-flag" class="mobile-nav-link block px-3.5 py-2.5 rounded-xl text-amber-300 bg-amber-500/10 border border-amber-500/20 font-semibold">🚩 Ensiklopedia Tanda - dan -- (19 Flags)</a>
+      <a href="#simulator-zona" class="mobile-nav-link block px-3.5 py-2.5 rounded-xl text-slate-200 hover:bg-slate-800">🔄 Simulator Visual 4 Zona</a>
+      <a href="#sandbox-branch" class="mobile-nav-link block px-3.5 py-2.5 rounded-xl text-slate-200 hover:bg-slate-800">🌿 Sandbox Branch: Merge vs Rebase</a>
+      <a href="#kamus-perintah" class="mobile-nav-link block px-3.5 py-2.5 rounded-xl text-slate-200 hover:bg-slate-800">📚 Kamus Perintah Git (40 Perintah)</a>
+      <button onclick="openPanicDrawer()" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-rose-600/20 text-rose-300 border border-rose-500/40 font-bold cursor-pointer">🚨 Buka Tombol Panik!</button>
+    </div>
+  </header>
+
+  <!-- Floating Bottom-Right Panic Button -->
+  <button
+    onclick="openPanicDrawer()"
+    aria-label="Buka Tombol Panik Penyelamat Darurat"
+    class="fixed bottom-5 right-5 z-40 px-4 py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-extrabold text-xs sm:text-sm shadow-2xl shadow-rose-600/40 border border-rose-300/30 flex items-center gap-2 transition transform hover:scale-105 cursor-pointer"
+  >
+    <span class="text-base animate-bounce">🚨</span>
+    <span>Tombol Panik!</span>
+  </button>
+
+  <!-- ===================================================================== -->
+  <!-- 2. HERO SECTION & INTERACTIVE SVG BRANCHING COMMIT TREE -->
+  <!-- ===================================================================== -->
+  <section class="relative overflow-hidden pt-10 pb-16 sm:pt-16 sm:pb-24 border-b border-[#1e293b]">
+    <div class="absolute -top-28 -left-28 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-28 -right-28 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+        
+        <!-- Left Hero Copy -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm font-semibold">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            Dari Nol Sampai Sepuh Git • Bahasa Manusia &amp; Interaktif
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl lg:text-[50px] font-extrabold tracking-tight leading-[1.12] text-white">
+            Kuasai Git Tanpa Panik: <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400">Dokumentasi, Flag &amp; Lab Error</span>
+          </h1>
+
+          <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl">
+            Bingung saat terminal muncul <code class="text-rose-400 font-mono text-sm bg-rose-500/10 px-1.5 py-0.5 rounded">! [rejected] main -&gt; main (fetch first)</code> atau penasaran apa bedanya <code class="text-amber-300 font-mono text-sm bg-amber-500/10 px-1.5 py-0.5 rounded">--force</code> dengan <code class="text-emerald-300 font-mono text-sm bg-emerald-500/10 px-1.5 py-0.5 rounded">--force-with-lease</code>? Pelajari semuanya secara visual dari <strong>Pemula</strong> hingga <strong>Dewa Krisis</strong>!
+          </p>
+
+          <!-- Primary CTA Buttons -->
+          <div class="flex flex-wrap items-center gap-3.5 pt-1">
+            <a href="#lab-error" class="px-6 py-3.5 rounded-2xl bg-rose-500 hover:bg-rose-400 text-white font-bold text-sm sm:text-base transition flex items-center gap-2 shadow-lg shadow-rose-500/25">
+              <i data-lucide="flask-conical" class="w-4 h-4"></i>
+              Coba Simulator Error (13)
+            </a>
+            <a href="#ensiklopedia-flag" class="px-6 py-3.5 rounded-2xl bg-[#111827] hover:bg-slate-800 text-white border border-[#1e293b] hover:border-amber-500/50 font-semibold text-sm sm:text-base transition flex items-center gap-2">
+              <i data-lucide="flag" class="w-4 h-4 text-amber-400"></i>
+              Arti Tanda - &amp; -- (Flags)
+            </a>
+          </div>
+
+          <!-- Highlight Metric Cards -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 max-w-2xl">
+            <div class="p-3 rounded-2xl glass-card">
+              <div class="text-lg font-extrabold text-rose-400">13 Error</div>
+              <div class="text-[11px] text-slate-400">Akar Penyebab &amp; Fix</div>
+            </div>
+            <div class="p-3 rounded-2xl glass-card">
+              <div class="text-lg font-extrabold text-amber-400">19 Flags</div>
+              <div class="text-[11px] text-slate-400">Kupas Tuntas - &amp; --</div>
+            </div>
+            <div class="p-3 rounded-2xl glass-card">
+              <div class="text-lg font-extrabold text-cyan-400">4 Zona</div>
+              <div class="text-[11px] text-slate-400">Animasi Alur Kode</div>
+            </div>
+            <div class="p-3 rounded-2xl glass-card">
+              <div class="text-lg font-extrabold text-emerald-400">40 Jurus</div>
+              <div class="text-[11px] text-slate-400">Pemula – Dewa Krisis</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Interactive SVG Branching Commit Tree -->
+        <div class="lg:col-span-5">
+          <div class="rounded-3xl glass-card p-4 sm:p-6 shadow-2xl animate-float">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-[#1e293b]">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                <span class="ml-1.5 text-xs font-mono text-slate-400">commit-graph.svg</span>
+              </div>
+              <span class="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
+                Klik titik commit!
+              </span>
+            </div>
+
+            <!-- Interactive SVG Tree -->
+            <div class="w-full overflow-hidden rounded-2xl bg-[#090d16] border border-[#1e293b] p-2">
+              <svg viewBox="0 0 430 275" class="w-full h-auto select-none">
+                <defs>
+                  <linearGradient id="gradMain" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#10b981" />
+                    <stop offset="100%" stop-color="#06b6d4" />
+                  </linearGradient>
+                  <linearGradient id="gradLogin" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#a855f7" />
+                    <stop offset="100%" stop-color="#ec4899" />
+                  </linearGradient>
+                </defs>
+
+                <!-- Branch Labels -->
+                <rect x="10" y="45" width="54" height="22" rx="6" fill="#10b981" fill-opacity="0.16" stroke="#10b981" stroke-width="1"/>
+                <text x="37" y="59" text-anchor="middle" fill="#34d399" font-family="JetBrains Mono" font-size="11" font-weight="700">main</text>
+
+                <rect x="10" y="135" width="84" height="22" rx="6" fill="#a855f7" fill-opacity="0.16" stroke="#a855f7" stroke-width="1"/>
+                <text x="52" y="149" text-anchor="middle" fill="#c084fc" font-family="JetBrains Mono" font-size="10" font-weight="700">fitur-login</text>
+
+                <rect x="10" y="212" width="92" height="22" rx="6" fill="#f59e0b" fill-opacity="0.16" stroke="#f59e0b" stroke-width="1"/>
+                <text x="56" y="226" text-anchor="middle" fill="#fbbf24" font-family="JetBrains Mono" font-size="10" font-weight="700">hotfix-urgent</text>
+
+                <!-- Main Line -->
+                <line x1="120" y1="56" x2="375" y2="56" stroke="url(#gradMain)" stroke-width="3.5" stroke-linecap="round"/>
+                <line x1="120" y1="56" x2="375" y2="56" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.5" class="svg-flow-line"/>
+
+                <!-- fitur-login Branch Path -->
+                <path d="M 120 56 C 160 56, 160 146, 200 146 L 285 146 C 325 146, 335 56, 375 56" fill="none" stroke="url(#gradLogin)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 120 56 C 160 56, 160 146, 200 146 L 285 146 C 325 146, 335 56, 375 56" fill="none" stroke="#ffffff" stroke-opacity="0.3" stroke-width="1.5" class="svg-flow-line"/>
+
+                <!-- hotfix-urgent Branch Path -->
+                <path d="M 205 56 C 235 56, 235 223, 265 223 L 330 223" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="5 4"/>
+
+                <!-- Node 1: Init -->
+                <g class="hero-node cursor-pointer" data-hash="a1b2c3d" data-branch="main" data-head="Tidak (Riwayat Awal)" data-title="chore: init project & setup struktur" data-desc="Analogi: Bikin Save Game pertama kali (Slot #1). Proyek baru saja diinisialisasi dengan git init.">
+                  <circle cx="120" cy="56" r="11" fill="#10b981" class="node-ring"/>
+                  <circle cx="120" cy="56" r="10" fill="#090d16" stroke="#10b981" stroke-width="3.5"/>
+                  <text x="120" y="34" text-anchor="middle" fill="#94a3b8" font-family="JetBrains Mono" font-size="10">a1b2c3d</text>
+                </g>
+
+                <!-- Node 2: Main -->
+                <g class="hero-node cursor-pointer" data-hash="e4f5g6h" data-branch="main" data-head="Tidak" data-title="feat: tambah landing page & navbar" data-desc="Analogi: Save Point #2 di jalur utama sebelum tim membelah diri membuat cabang fitur baru.">
+                  <circle cx="205" cy="56" r="10" fill="#090d16" stroke="#10b981" stroke-width="3.5"/>
+                  <text x="205" y="34" text-anchor="middle" fill="#94a3b8" font-family="JetBrains Mono" font-size="10">e4f5g6h</text>
+                </g>
+
+                <!-- Node 3: fitur-login 1 -->
+                <g class="hero-node cursor-pointer" data-hash="99ab12c" data-branch="fitur-login" data-head="Tidak" data-title="feat(auth): form login & validasi email" data-desc="Analogi: Dunia paralel aman! Kamu ngoding fitur login di cabang terpisah tanpa takut merusak kode main.">
+                  <circle cx="200" cy="146" r="10" fill="#090d16" stroke="#a855f7" stroke-width="3.5"/>
+                  <text x="200" y="174" text-anchor="middle" fill="#d8b4fe" font-family="JetBrains Mono" font-size="10">99ab12c</text>
+                </g>
+
+                <!-- Node 4: fitur-login 2 -->
+                <g class="hero-node cursor-pointer" data-hash="77de34f" data-branch="fitur-login" data-head="Tidak" data-title="feat(auth): integrasi JWT token" data-desc="Analogi: Melanjutkan progres di jalur cabang fitur-login sampai siap digabungkan kembali ke main.">
+                  <circle cx="285" cy="146" r="10" fill="#090d16" stroke="#a855f7" stroke-width="3.5"/>
+                  <text x="285" y="174" text-anchor="middle" fill="#d8b4fe" font-family="JetBrains Mono" font-size="10">77de34f</text>
+                </g>
+
+                <!-- Node 5: hotfix-urgent -->
+                <g class="hero-node cursor-pointer" data-hash="fix911x" data-branch="hotfix-urgent" data-head="Tidak" data-title="fix(urgent): tambal celah keamanan sesi" data-desc="Analogi: Jalur darurat UGD! Dibuat cepat dari main untuk menambal bug kritis di produksi.">
+                  <circle cx="265" cy="223" r="9" fill="#090d16" stroke="#f59e0b" stroke-width="3"/>
+                  <circle cx="330" cy="223" r="9" fill="#f59e0b" stroke="#090d16" stroke-width="2"/>
+                  <text x="298" y="248" text-anchor="middle" fill="#fcd34d" font-family="JetBrains Mono" font-size="10">fix911x</text>
+                </g>
+
+                <!-- Node 6: Merge HEAD -->
+                <g class="hero-node cursor-pointer" data-hash="f9e8d7c" data-branch="main" data-head="YA — HEAD menunjuk ke sini!" data-title="Merge branch 'fitur-login' into main" data-desc="Analogi: Titik pertemuan sungai! Semua kerja keras di fitur-login resmi bergabung ke main, dan posisi aktifmu (HEAD) ada di sini.">
+                  <circle cx="375" cy="56" r="13" fill="#06b6d4" class="node-ring"/>
+                  <circle cx="375" cy="56" r="11" fill="#10b981" stroke="#f8fafc" stroke-width="3"/>
+                  <rect x="344" y="13" width="62" height="20" rx="5" fill="#06b6d4"/>
+                  <text x="375" y="26" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">HEAD ★</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- Commit Node Inspector -->
+            <div class="mt-3.5 p-3.5 rounded-2xl bg-[#090d16] border border-[#1e293b] space-y-1.5">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span id="hero-info-title" class="text-xs sm:text-sm font-bold text-white">Merge branch 'fitur-login' into main</span>
+                <span id="hero-info-hash" class="text-[11px] font-mono px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">main • f9e8d7c</span>
+              </div>
+              <div class="text-[11px] font-mono text-emerald-400">Posisi HEAD: <span id="hero-info-head">YA — HEAD menunjuk ke sini!</span></div>
+              <p id="hero-info-desc" class="text-xs text-slate-400 leading-relaxed">
+                Analogi: Titik pertemuan sungai! Semua kerja keras di fitur-login resmi bergabung ke main, dan posisi aktifmu (HEAD) ada di sini.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 3. SIMULATOR ERROR GIT NYATA & AKAR PENYEBABNYA (13 SKENARIO) -->
+  <!-- ===================================================================== -->
+  <section id="lab-error" class="py-16 sm:py-24 border-b border-[#1e293b] relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="max-w-3xl mb-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-mono mb-3">
+          <i data-lucide="terminal-square" class="w-3.5 h-3.5 text-rose-400"></i> SIMULATOR ERROR &amp; AKAR PENYEBAB
+        </div>
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+          Simulator <span class="text-rose-400">Error Git Nyata</span> &amp; Akar Penyebabnya
+        </h2>
+        <p class="text-slate-400 mt-2.5 text-sm sm:text-base leading-relaxed">
+          Pilih salah satu dari 13 skenario error merah yang sering bikin pemula bingung di terminal. Baca kotak <strong>🔍 Kenapa Error Ini Bisa Terjadi? (Akar Penyebab)</strong>, lalu klik <strong>🛠️ Jalankan Solusi Aman</strong> atau ikuti langkah perbaikannya satu per satu!
+        </p>
+      </div>
+
+      <!-- Error Category Filter Bar -->
+      <div id="error-category-tabs" class="flex flex-wrap gap-2 mb-6">
+        <button data-errcat="all" class="err-cat-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-rose-500 text-white transition cursor-pointer">
+          Semua (13)
+        </button>
+        <button data-errcat="Push & Pull" class="err-cat-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-[#111827] text-slate-300 border border-[#1e293b] hover:border-rose-500/40 transition cursor-pointer">
+          🚀 Push &amp; Pull (6)
+        </button>
+        <button data-errcat="Merge & Conflict" class="err-cat-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-[#111827] text-slate-300 border border-[#1e293b] hover:border-amber-500/40 transition cursor-pointer">
+          ⚔️ Merge &amp; Conflict (2)
+        </button>
+        <button data-errcat="Commit & Lock" class="err-cat-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-[#111827] text-slate-300 border border-[#1e293b] hover:border-cyan-500/40 transition cursor-pointer">
+          ⚙️ Commit &amp; Lock (3)
+        </button>
+        <button data-errcat="Branch & Stash" class="err-cat-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-[#111827] text-slate-300 border border-[#1e293b] hover:border-purple-500/40 transition cursor-pointer">
+          🌿 Branch &amp; Stash (2)
+        </button>
+      </div>
+
+      <!-- Lab Master-Detail Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left Sidebar: List of 13 Real Git Errors -->
+        <div id="error-scenario-list" class="lg:col-span-4 space-y-2 max-h-[820px] overflow-y-auto pr-1">
+          <!-- Populated dynamically by JS -->
+        </div>
+
+        <!-- Right Interactive Error Lab Workbench -->
+        <div class="lg:col-span-8 rounded-3xl glass-card p-4 sm:p-6 shadow-2xl space-y-5">
+          
+          <!-- Top Status Bar & Quick Action Buttons -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#1e293b]">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span id="err-active-cat" class="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">Push &amp; Pull</span>
+                <span id="err-status-badge" class="text-xs font-mono font-extrabold px-3 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                  ❌ ERROR AKTIF
+                </span>
+              </div>
+              <h3 id="err-active-title" class="text-base sm:text-xl font-extrabold text-white pt-1">
+                ! [rejected] main -&gt; main (fetch first)
+              </h3>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="resetActiveErrorLab()" class="px-3.5 py-2 rounded-xl bg-[#090d16] hover:bg-slate-800 text-slate-300 border border-[#1e293b] text-xs font-mono flex items-center gap-1.5 transition cursor-pointer">
+                <span>🔄</span> Ulangi Error
+              </button>
+              <button onclick="solveAllErrorSteps()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-[#090d16] font-extrabold text-xs font-mono flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 transition cursor-pointer">
+                <span>🛠️</span> Jalankan Solusi Aman
+              </button>
+            </div>
+          </div>
+
+          <!-- 1. Visual Diagram: Penyebab Error (Sebelum vs Sesudah Diperbaiki) -->
+          <div class="rounded-2xl bg-[#090d16] border border-[#1e293b] p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono uppercase tracking-wider text-cyan-400 font-bold flex items-center gap-1.5">
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Diagram Visual Keadaan Git (<span id="err-diagram-phase" class="text-rose-400">Sebelum Diperbaiki</span>)
+              </span>
+            </div>
+            <div id="err-visual-diagram" class="w-full overflow-x-auto">
+              <!-- SVG Diagram injected dynamically by JS -->
+            </div>
+          </div>
+
+          <!-- 2. Real-Time Colored Terminal Simulation -->
+          <div class="rounded-2xl bg-[#05080f] border border-[#1e293b] overflow-hidden shadow-inner">
+            <div class="flex items-center justify-between px-4 py-2.5 bg-[#0d1320] border-b border-[#1e293b]">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span class="ml-1.5 text-xs font-mono text-slate-400">terminal — ~/proyek-edutest (main)</span>
+              </div>
+              <button
+                id="toggle-human-btn"
+                onclick="toggleHumanTranslation()"
+                class="px-3 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+              >
+                <span>🧠</span>
+                <span id="toggle-human-label">Sembunyikan Bedah Error</span>
+              </button>
+            </div>
+
+            <!-- Colored Terminal Output -->
+            <div id="err-terminal-output" class="p-4 font-mono text-xs sm:text-[13px] leading-relaxed overflow-x-auto space-y-1">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- 3. Akar Penyebab & Terjemahan Baris per Baris -->
+          <div id="err-human-panel" class="rounded-2xl bg-amber-500/10 border border-amber-500/30 p-4 sm:p-5 space-y-3 animate-fade-up">
+            <div class="flex items-center gap-2 text-amber-300 font-extrabold text-sm sm:text-base">
+              <span>🔍</span>
+              <span>Kenapa Error Ini Bisa Terjadi? (Akar Penyebab)</span>
+            </div>
+            <p id="err-summary-indo" class="text-xs sm:text-sm text-slate-200 leading-relaxed"></p>
+            <div id="err-line-breakdown" class="space-y-2 pt-1">
+              <!-- Line by line breakdown -->
+            </div>
+          </div>
+
+          <!-- 4. Special Mini Interactive Conflict Editor (Shown for Merge Conflict Scenario) -->
+          <div id="conflict-mini-editor" class="hidden rounded-2xl bg-[#090d16] border-2 border-purple-500/40 p-4 sm:p-5 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2 text-purple-300 font-bold text-xs sm:text-sm">
+                <i data-lucide="file-diff" class="w-4 h-4"></i>
+                <span>Mini Editor VS Code: Selesaikan Konflik <code class="font-mono text-cyan-300">app.js</code></span>
+              </div>
+              <span id="conflict-editor-status" class="text-[11px] font-mono px-2 py-0.5 rounded bg-rose-500/20 text-rose-300">Belum diselesaikan</span>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <button onclick="resolveConflictChoice('current')" class="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 font-mono text-xs font-semibold transition cursor-pointer">
+                ✔ Accept Current (HEAD: 50000)
+              </button>
+              <button onclick="resolveConflictChoice('incoming')" class="px-3 py-1.5 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 font-mono text-xs font-semibold transition cursor-pointer">
+                ✔ Accept Incoming (fitur: 75000)
+              </button>
+              <button onclick="resolveConflictChoice('both')" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 font-mono text-xs font-semibold transition cursor-pointer">
+                ✔ Accept Both Changes
+              </button>
+            </div>
+
+            <pre id="conflict-code-preview" class="p-3.5 rounded-xl bg-[#05080f] border border-[#1e293b] font-mono text-xs leading-relaxed overflow-x-auto text-slate-200"></pre>
+          </div>
+
+          <!-- 5. Interactive Step-by-Step Fix Buttons & Cara Kerja Solusi -->
+          <div class="rounded-2xl bg-[#090d16] border border-emerald-500/30 p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="text-xs sm:text-sm font-bold text-emerald-400 flex items-center gap-2">
+                <i data-lucide="wrench" class="w-4 h-4"></i>
+                <span>Langkah Perbaikan Berurutan (atau klik "🛠️ Jalankan Solusi Aman"):</span>
+              </div>
+              <span id="err-step-progress" class="text-xs font-mono text-slate-400">0 / 2 langkah</span>
+            </div>
+            <div id="err-fix-buttons" class="flex flex-col sm:flex-row flex-wrap gap-2.5">
+              <!-- Fix buttons generated dynamically -->
+            </div>
+            <div class="pt-2 border-t border-[#1e293b] text-xs text-slate-300 leading-relaxed">
+              <strong class="text-emerald-400">💡 Cara Kerja Solusinya:</strong> <span id="err-solution-how"></span>
+            </div>
+          </div>
+
+          <!-- 6. Beginner Trap Warning Box -->
+          <div class="rounded-2xl bg-rose-950/30 border border-rose-500/35 p-4 flex items-start gap-3">
+            <div class="p-2 rounded-xl bg-rose-500/20 text-rose-400 shrink-0 mt-0.5">
+              <i data-lucide="skull" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <div class="text-xs sm:text-sm font-extrabold text-rose-300">⚠️ Jebakan Pemula (Jangan Lakukan Ini!):</div>
+              <p id="err-beginner-trap" class="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed"></p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 4. ENSIKLOPEDIA LENGKAP TANDA - DAN -- (FLAGS / OPSI GIT) -->
+  <!-- ===================================================================== -->
+  <section id="ensiklopedia-flag" class="py-16 sm:py-24 border-b border-[#1e293b] relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mb-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-mono mb-3">
+          <i data-lucide="flag" class="w-3.5 h-3.5"></i> ENSIKLOPEDIA FLAGS • ARTI TANDA - DAN --
+        </div>
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+          Kupas Tuntas Tanda <span class="text-amber-400 font-mono">-</span> dan <span class="text-purple-400 font-mono">--</span> di Git
+        </h2>
+        <p class="text-slate-400 mt-2.5 text-sm sm:text-base leading-relaxed">
+          Dalam perintah terminal <code class="text-cyan-300 font-mono bg-[#111827] px-1.5 py-0.5 rounded">git [perintah] [flag/opsi] [argumen]</code>, tanda strip berfungsi seperti sakelar pengubah perilaku perintah Git. Pahami 3 jenisnya agar tidak pernah salah pencet flag berbahaya!
+        </p>
+      </div>
+
+      <!-- 3 Jenis Tanda Strip Visual Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="rounded-3xl glass-card p-5 border-t-4 border-t-cyan-400 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-xl bg-cyan-500/15 text-cyan-300 font-mono font-extrabold text-base">- (Short Flag)</span>
+            <span class="text-xs font-mono text-slate-400">Singkatan 1 Huruf</span>
+          </div>
+          <h3 class="font-bold text-white text-base">Satu Strip = Singkatan Cepat</h3>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Dipakai untuk opsi harian agar mengetiknya super cepat. Contoh: <code class="text-cyan-300 font-mono">-m</code> (pesan), <code class="text-cyan-300 font-mono">-u</code> (upstream), <code class="text-cyan-300 font-mono">-b</code> (branch), <code class="text-cyan-300 font-mono">-f</code> (force).
+          </p>
+        </div>
+
+        <div class="rounded-3xl glass-card p-5 border-t-4 border-t-purple-400 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-xl bg-purple-500/15 text-purple-300 font-mono font-extrabold text-base">-- (Long Flag)</span>
+            <span class="text-xs font-mono text-slate-400">Kata Penuh</span>
+          </div>
+          <h3 class="font-bold text-white text-base">Dua Strip = Nama Opsi Lengkap</h3>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Opsi spesifik yang lebih jelas dibaca manusia. Contoh: <code class="text-purple-300 font-mono">--force</code>, <code class="text-purple-300 font-mono">--force-with-lease</code>, <code class="text-purple-300 font-mono">--amend</code>, <code class="text-purple-300 font-mono">--hard</code>, <code class="text-purple-300 font-mono">--oneline</code>.
+          </p>
+        </div>
+
+        <div class="rounded-3xl glass-card p-5 border-t-4 border-t-emerald-400 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-xl bg-emerald-500/15 text-emerald-300 font-mono font-extrabold text-base">-- (Path Separator)</span>
+            <span class="text-xs font-mono text-slate-400">Berdiri Sendiri</span>
+          </div>
+          <h3 class="font-bold text-white text-base">Pemisah Branch &amp; File</h3>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Memisahkan nama branch di kiri dengan nama file di kanan. Contoh: <code class="text-emerald-300 font-mono">git checkout -- index.html</code> agar Git tidak bingung jika ada branch &amp; file bernama sama.
+          </p>
+        </div>
+      </div>
+
+      <!-- Interactive Duel Simulator: git push --force vs git push --force-with-lease -->
+      <div class="rounded-3xl glass-card p-5 sm:p-7 border border-rose-500/35 mb-8 space-y-5 shadow-2xl">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#1e293b]">
+          <div>
+            <span class="text-xs font-mono uppercase tracking-wider text-rose-400 font-bold">⚔️ SIMULASI DUEL FLAG SEPUH • WAJIB TAHU</span>
+            <h3 class="text-lg sm:text-2xl font-extrabold text-white mt-0.5">
+              Duel <code class="text-rose-400 font-mono">git push --force</code> vs <code class="text-emerald-400 font-mono">git push --force-with-lease</code>
+            </h3>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="runForceDuel('force')" class="px-3.5 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 font-mono text-xs font-bold transition cursor-pointer">
+              💥 Simulasi --force
+            </button>
+            <button onclick="runForceDuel('lease')" class="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 font-mono text-xs font-bold transition cursor-pointer">
+              🛡️ Simulasi --force-with-lease
+            </button>
+            <button onclick="runForceDuel('reset')" class="px-3 py-2 rounded-xl bg-[#090d16] hover:bg-slate-800 text-slate-400 border border-[#1e293b] font-mono text-xs transition cursor-pointer">
+              🔄 Reset Duel
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+          <div class="lg:col-span-6 space-y-3">
+            <!-- Visual SVG Diagram for Force Duel -->
+            <div id="force-duel-diagram" class="rounded-2xl bg-[#090d16] border border-[#1e293b] p-3 overflow-x-auto">
+              <!-- Populated by JS -->
+            </div>
+            <div class="p-3 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-slate-300 leading-relaxed">
+              <strong class="text-amber-300">Skenario Tim:</strong> Kamu baru saja merevisi commit <code class="font-mono text-cyan-300">C2</code> menjadi <code class="font-mono text-cyan-300">C2'</code> (<code class="font-mono">git commit --amend</code>), namun 1 menit lalu rekan timmu baru saja meng-upload commit <code class="font-mono text-purple-300">C3</code> ke GitHub! Klik kedua tombol simulasi di atas untuk melihat nasib commit <code class="font-mono text-purple-300">C3</code>.
+            </div>
+          </div>
+
+          <div class="lg:col-span-6 rounded-2xl bg-[#05080f] border border-[#1e293b] overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-2 bg-[#0d1320] border-b border-[#1e293b] text-xs font-mono text-slate-400">
+              <span>duel-force-terminal.sh</span>
+              <span id="force-duel-badge" class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Siap Simulasi</span>
+            </div>
+            <pre id="force-duel-terminal" class="p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-slate-300 min-h-[168px]">$ # Posisi Remote GitHub : C1 -> C2 -> C3 (Commit baru rekan tim!)
+$ # Posisi Laptop Kamu   : C1 -> C2' (Hasil git commit --amend)
+$ # Klik "💥 Simulasi --force" atau "🛡️ Simulasi --force-with-lease" di atas!</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter & Search Bar for 19 Flags -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 p-4 rounded-3xl glass-card">
+        <div class="flex flex-wrap gap-2" id="flag-risk-tabs">
+          <button data-risk="all" class="flag-risk-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500 text-[#090d16] transition cursor-pointer">
+            Semua Flag (19)
+          </button>
+          <button data-risk="safe" class="flag-risk-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-emerald-300 border border-[#1e293b] hover:border-emerald-500/40 transition cursor-pointer">
+            🟢 Aman (Harian)
+          </button>
+          <button data-risk="warn" class="flag-risk-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-amber-300 border border-[#1e293b] hover:border-amber-500/40 transition cursor-pointer">
+            🟡 Hati-hati (Ubah Riwayat)
+          </button>
+          <button data-risk="danger" class="flag-risk-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-rose-300 border border-[#1e293b] hover:border-rose-500/40 transition cursor-pointer">
+            🔴 Sangat Berbahaya (Destruktif)
+          </button>
+        </div>
+
+        <div class="relative w-full md:w-80">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+          <input
+            type="text"
+            id="flag-search-input"
+            placeholder="Cari flag (misal: --force, --hard, -u)..."
+            class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] focus:border-amber-400 focus:outline-none text-xs sm:text-sm text-white placeholder-slate-500"
+          />
+        </div>
+      </div>
+
+      <!-- Flags Grid (19 Cards) -->
+      <div id="flags-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 5. SIMULATOR VISUAL 4 ZONA PERJALANAN KODE DI GIT -->
+  <!-- ===================================================================== -->
+  <section id="simulator-zona" class="py-16 sm:py-24 border-b border-[#1e293b] relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mb-10">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono mb-3">
+          <i data-lucide="layers" class="w-3.5 h-3.5"></i> SIMULATOR ALUR KERJA
+        </div>
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+          Simulator Visual: <span class="text-cyan-400">4 Zona Perjalanan Kode di Git</span>
+        </h2>
+        <p class="text-slate-400 mt-2.5 text-sm sm:text-base leading-relaxed">
+          Lihat bagaimana paket file berpindah tempat dari laptopmu hingga ke server GitHub. Klik tombol aksi di bawah untuk melihat animasi perpindahan paket secara langsung!
+        </p>
+      </div>
+
+      <div class="rounded-3xl glass-card p-4 sm:p-7 shadow-2xl relative">
+        <!-- Animated Flying Packet -->
+        <div id="flying-packet" class="hidden fixed z-50 px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 text-[#090d16] font-mono font-extrabold text-xs shadow-2xl flex items-center gap-1.5">
+          <i data-lucide="package" class="w-4 h-4"></i>
+          <span id="flying-packet-label">app.js</span>
+        </div>
+
+        <!-- 4 Zones Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Zona 1 -->
+          <div id="zone-working" class="rounded-2xl bg-[#090d16] border-2 border-amber-500/40 p-4 flex flex-col justify-between min-h-[215px] transition-all">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 font-bold">ZONA 1</span>
+                <i data-lucide="laptop" class="w-4 h-4 text-amber-400"></i>
+              </div>
+              <h3 class="font-bold text-white text-base">Working Directory</h3>
+              <p class="text-xs text-amber-300/90 mt-0.5">Analogi: Meja Kerja Laptop</p>
+              <p class="text-[11px] text-slate-400 mt-1">Folder tempat kamu mengedit kode secara langsung di editor.</p>
+            </div>
+            <div id="files-working" class="mt-4 space-y-1.5 min-h-[68px] p-2.5 rounded-xl bg-[#111827] border border-[#1e293b]"></div>
+          </div>
+
+          <!-- Zona 2 -->
+          <div id="zone-staging" class="rounded-2xl bg-[#090d16] border-2 border-cyan-500/40 p-4 flex flex-col justify-between min-h-[215px] transition-all">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-300 font-bold">ZONA 2</span>
+                <i data-lucide="shopping-basket" class="w-4 h-4 text-cyan-400"></i>
+              </div>
+              <h3 class="font-bold text-white text-base">Staging Area (Index)</h3>
+              <p class="text-xs text-cyan-300/90 mt-0.5">Analogi: Keranjang Belanja</p>
+              <p class="text-[11px] text-slate-400 mt-1">Ruang tunggu berisi daftar file pilihan yang siap difoto.</p>
+            </div>
+            <div id="files-staging" class="mt-4 space-y-1.5 min-h-[68px] p-2.5 rounded-xl bg-[#111827] border border-[#1e293b]"></div>
+          </div>
+
+          <!-- Zona 3 -->
+          <div id="zone-local" class="rounded-2xl bg-[#090d16] border-2 border-emerald-500/40 p-4 flex flex-col justify-between min-h-[215px] transition-all">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 font-bold">ZONA 3</span>
+                <i data-lucide="hard-drive" class="w-4 h-4 text-emerald-400"></i>
+              </div>
+              <h3 class="font-bold text-white text-base">Local Repository (.git)</h3>
+              <p class="text-xs text-emerald-300/90 mt-0.5">Analogi: Save Point di Laptop</p>
+              <p class="text-[11px] text-slate-400 mt-1">Brankas riwayat commit permanen di dalam komputermu.</p>
+            </div>
+            <div id="files-local" class="mt-4 space-y-1.5 min-h-[68px] p-2.5 rounded-xl bg-[#111827] border border-[#1e293b]"></div>
+          </div>
+
+          <!-- Zona 4 -->
+          <div id="zone-remote" class="rounded-2xl bg-[#090d16] border-2 border-purple-500/40 p-4 flex flex-col justify-between min-h-[215px] transition-all">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-purple-500/15 text-purple-300 font-bold">ZONA 4</span>
+                <i data-lucide="cloud" class="w-4 h-4 text-purple-400"></i>
+              </div>
+              <h3 class="font-bold text-white text-base">Remote Repository (GitHub)</h3>
+              <p class="text-xs text-purple-300/90 mt-0.5">Analogi: Server Cloud Tim</p>
+              <p class="text-[11px] text-slate-400 mt-1">Repositori online tempat menyimpan backup &amp; kolaborasi tim.</p>
+            </div>
+            <div id="files-remote" class="mt-4 space-y-1.5 min-h-[68px] p-2.5 rounded-xl bg-[#111827] border border-[#1e293b]"></div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-6 pt-5 border-t border-[#1e293b]">
+          <div class="text-xs font-mono uppercase tracking-wider text-slate-400 mb-3">Klik Tombol Aksi untuk Melihat Animasi:</div>
+          <div class="flex flex-wrap gap-2.5">
+            <button onclick="simZoneAction('edit')" class="px-4 py-2.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/35 font-mono text-xs sm:text-sm font-bold transition cursor-pointer">
+              1. Edit File
+            </button>
+            <button onclick="simZoneAction('add')" class="px-4 py-2.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/35 font-mono text-xs sm:text-sm font-bold transition cursor-pointer">
+              2. git add .
+            </button>
+            <button onclick="simZoneAction('commit')" class="px-4 py-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/35 font-mono text-xs sm:text-sm font-bold transition cursor-pointer">
+              3. git commit -m
+            </button>
+            <button onclick="simZoneAction('push')" class="px-4 py-2.5 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 border border-purple-500/35 font-mono text-xs sm:text-sm font-bold transition cursor-pointer">
+              4. git push -u origin main
+            </button>
+            <button onclick="simZoneAction('pull')" class="px-4 py-2.5 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 text-teal-300 border border-teal-500/35 font-mono text-xs sm:text-sm font-bold transition cursor-pointer">
+              5. git pull
+            </button>
+            <button onclick="simZoneAction('reset')" class="px-4 py-2.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/35 font-mono text-xs sm:text-sm font-bold transition cursor-pointer">
+              ↩️ git reset --soft
+            </button>
+          </div>
+        </div>
+
+        <!-- Behind the Scenes & Live Terminal Log -->
+        <div class="mt-5 grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-7 p-4 sm:p-5 rounded-2xl bg-[#090d16] border border-[#1e293b]">
+            <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm mb-1.5">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+              <span>Apa yang Terjadi di Balik Layar?</span>
+            </div>
+            <p id="sim-explanation" class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+              File <code class="text-amber-300 font-mono">app.js</code> baru saja diubah di <strong>Working Directory</strong>. Tekan <code class="text-cyan-300 font-mono">2. git add .</code> untuk memasukkannya ke keranjang Staging Area!
+            </p>
+          </div>
+
+          <div class="lg:col-span-5 p-4 rounded-2xl bg-[#05080f] border border-[#1e293b] font-mono text-xs">
+            <div class="flex items-center justify-between text-slate-500 pb-2 mb-2 border-b border-[#1e293b]">
+              <span>live-terminal.log</span>
+              <span class="text-emerald-400">● active</span>
+            </div>
+            <pre id="sim-terminal" class="text-emerald-300 whitespace-pre-wrap leading-relaxed overflow-x-auto">$ git status -s
+ M app.js</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 6. SANDBOX POHON BRANCH & PERBANDINGAN MERGE VS REBASE -->
+  <!-- ===================================================================== -->
+  <section id="sandbox-branch" class="py-16 sm:py-24 border-b border-[#1e293b]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mb-10">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-mono mb-3">
+          <i data-lucide="git-merge" class="w-3.5 h-3.5"></i> SANDBOX POHON BRANCH
+        </div>
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+          Perbandingan Visual: <span class="text-emerald-400">Git Merge (--no-ff)</span> vs <span class="text-purple-400">Git Rebase</span>
+        </h2>
+        <p class="text-slate-400 mt-2.5 text-sm sm:text-base leading-relaxed">
+          Klik tombol aksi di bawah untuk membangun pohon commit-mu sendiri! Perhatikan bagaimana <strong>Git Merge (--no-ff)</strong> menciptakan bentuk berlian (diamond commit) dengan 2 induk, sedangkan <strong>Git Rebase</strong> meluruskan sejarah menjadi satu garis rapi.
+        </p>
+      </div>
+
+      <div class="rounded-3xl glass-card p-4 sm:p-7 shadow-2xl">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-4 border-b border-[#1e293b]">
+          <div class="flex items-center gap-2.5">
+            <span class="text-xs font-mono text-slate-400">Branch Aktif (<span class="text-cyan-400 font-bold">HEAD</span>):</span>
+            <span id="sandbox-active-branch" class="px-3 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-mono text-xs font-bold">main</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-4 text-xs font-mono">
+            <span class="flex items-center gap-1.5 text-emerald-400"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> main</span>
+            <span class="flex items-center gap-1.5 text-purple-400"><span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span> feature</span>
+            <span class="flex items-center gap-1.5 text-cyan-400"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span> HEAD</span>
+          </div>
+        </div>
+
+        <!-- Interactive SVG Graph -->
+        <div class="w-full overflow-x-auto rounded-2xl bg-[#090d16] border border-[#1e293b] p-3">
+          <svg id="sandbox-svg" viewBox="0 0 840 230" class="w-full min-w-[650px] h-[220px] select-none"></svg>
+        </div>
+
+        <!-- Controls -->
+        <div class="mt-5 flex flex-wrap gap-2.5">
+          <button onclick="sandboxCommit()" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-[#090d16] font-extrabold text-xs sm:text-sm transition cursor-pointer">
+            + Commit Baru
+          </button>
+          <button onclick="sandboxCreateFeature()" class="px-4 py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 font-semibold text-xs sm:text-sm transition cursor-pointer">
+            🌿 Buat Branch
+          </button>
+          <button onclick="sandboxSwitch()" class="px-4 py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 font-semibold text-xs sm:text-sm transition cursor-pointer">
+            🔀 Switch Branch
+          </button>
+          <button onclick="sandboxMerge()" class="px-4 py-2.5 rounded-xl bg-[#090d16] hover:bg-slate-800 text-emerald-300 border border-emerald-500/40 font-semibold text-xs sm:text-sm transition cursor-pointer">
+            🔗 Git Merge (--no-ff)
+          </button>
+          <button onclick="sandboxRebase()" class="px-4 py-2.5 rounded-xl bg-[#090d16] hover:bg-slate-800 text-purple-300 border border-purple-500/40 font-semibold text-xs sm:text-sm transition cursor-pointer">
+            ⚡ Git Rebase
+          </button>
+          <button onclick="sandboxCherryPick()" class="px-4 py-2.5 rounded-xl bg-[#090d16] hover:bg-slate-800 text-amber-300 border border-amber-500/40 font-semibold text-xs sm:text-sm transition cursor-pointer">
+            🍒 Cherry-Pick
+          </button>
+          <button onclick="sandboxReset()" class="ml-auto px-3.5 py-2.5 rounded-xl bg-[#090d16] hover:bg-slate-800 text-slate-400 hover:text-white border border-[#1e293b] text-xs font-mono transition cursor-pointer">
+            Reset Graf
+          </button>
+        </div>
+
+        <!-- Comparison Info Box -->
+        <div class="mt-5 grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-7 p-4 rounded-2xl bg-[#090d16] border border-[#1e293b]">
+            <div class="text-xs font-mono uppercase tracking-wider text-purple-400 font-bold mb-1">Narasi Graf Saat Ini:</div>
+            <p id="sandbox-narrator" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Graf dimulai dengan 2 commit di <code class="text-emerald-400 font-mono">main</code> dan 1 commit cabang di <code class="text-purple-400 font-mono">feature</code>. Klik <strong>🔗 Git Merge (--no-ff)</strong> atau <strong>⚡ Git Rebase</strong> untuk membandingkan hasilnya!
+            </p>
+          </div>
+          <div class="lg:col-span-5 p-4 rounded-2xl bg-[#090d16] border border-[#1e293b] text-xs space-y-1.5">
+            <div><strong class="text-emerald-400 font-mono">🔗 Git Merge (--no-ff):</strong> Membentuk <em>diamond commit</em> baru; sejarah cabang apa adanya tetap terlihat.</div>
+            <div><strong class="text-purple-400 font-mono">⚡ Git Rebase:</strong> Memindahkan pangkal commit ke ujung terbaru; riwayat jadi 1 garis lurus bersih.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 7. KAMUS PERINTAH GIT LENGKAP (40 PERINTAH, PEMULA → DEWA KRISIS) -->
+  <!-- ===================================================================== -->
+  <section id="kamus-perintah" class="py-16 sm:py-24 border-b border-[#1e293b]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header & Search -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-mono mb-3">
+            <i data-lucide="book-open" class="w-3.5 h-3.5"></i> KAMUS LENGKAP • 40 PERINTAH &amp; JURUS SEPUH
+          </div>
+          <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+            Kamus Perintah Git <span class="text-emerald-400">Pemula → Dewa Krisis</span>
+          </h2>
+          <p class="text-slate-400 mt-2 text-sm sm:text-base max-w-2xl">
+            Cari perintah, flag (<code class="text-cyan-400 font-mono">--amend</code>, <code class="text-cyan-400 font-mono">--hard</code>, <code class="text-cyan-400 font-mono">--rebase</code>), atau kata kunci masalah dalam Bahasa Indonesia.
+          </p>
+        </div>
+
+        <!-- Real-Time Search -->
+        <div class="relative w-full md:w-96">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+          <input
+            type="text"
+            id="command-search"
+            placeholder="Cari perintah, flag, atau analogi..."
+            class="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#111827] border border-[#1e293b] focus:border-emerald-500 focus:outline-none text-sm text-white placeholder-slate-500 transition"
+          />
+        </div>
+      </div>
+
+      <!-- Level Filter Controls -->
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-8 p-4 rounded-3xl glass-card">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-xs font-mono text-slate-400 mr-1">Filter Level:</span>
+          <div id="dict-level-tabs" class="flex flex-wrap gap-1.5">
+            <button data-lvl="all" class="dict-lvl-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-500 text-[#090d16] transition cursor-pointer">Semua (40)</button>
+            <button data-lvl="Pemula" class="dict-lvl-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-[#1e293b] hover:border-emerald-500/40 transition cursor-pointer">🌱 Pemula</button>
+            <button data-lvl="Menengah" class="dict-lvl-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-[#1e293b] hover:border-cyan-500/40 transition cursor-pointer">🚀 Menengah</button>
+            <button data-lvl="Sepuh" class="dict-lvl-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-[#1e293b] hover:border-purple-500/40 transition cursor-pointer">🧙‍♂️ Sepuh</button>
+            <button data-lvl="Dewa Krisis" class="dict-lvl-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-[#1e293b] hover:border-amber-500/40 transition cursor-pointer">⚡ Dewa Krisis</button>
+          </div>
+        </div>
+        <span id="dict-count-badge" class="text-xs font-mono text-slate-400">Menampilkan 40 perintah</span>
+      </div>
+
+      <!-- Full Comparison Table: git reset --soft vs --mixed vs --hard -->
+      <div class="mb-8 rounded-3xl glass-card p-5 sm:p-6 border border-amber-500/30">
+        <div class="flex items-center gap-2.5 mb-3">
+          <div class="p-2 rounded-xl bg-amber-500/20 text-amber-300">
+            <i data-lucide="sliders" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-sm sm:text-base">Tabel Perbandingan Wajib: <code class="text-emerald-400 font-mono">git reset --soft</code> vs <code class="text-cyan-400 font-mono">--mixed</code> vs <code class="text-rose-400 font-mono">--hard</code></h3>
+            <p class="text-xs text-slate-400">Ketiganya memundurkan posisi commit (HEAD), bedanya hanya pada nasib file di Staging Area &amp; Working Directory!</p>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="border-b border-[#1e293b] text-slate-400 font-mono">
+                <th class="py-2.5 px-3">Mode Flag</th>
+                <th class="py-2.5 px-3">Riwayat Commit (HEAD)</th>
+                <th class="py-2.5 px-3">Staging Area (Index)</th>
+                <th class="py-2.5 px-3">Working Directory (File Laptop)</th>
+                <th class="py-2.5 px-3">Keamanan</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#1e293b] text-slate-300">
+              <tr>
+                <td class="py-2.5 px-3 font-mono font-bold text-emerald-400">git reset --soft HEAD~1</td>
+                <td class="py-2.5 px-3">Mundur 1 commit</td>
+                <td class="py-2.5 px-3 text-emerald-300">Tetap tersimpan (Staged)</td>
+                <td class="py-2.5 px-3 text-emerald-300">Aman 100%</td>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 font-mono text-xs">Sangat Aman</span></td>
+              </tr>
+              <tr>
+                <td class="py-2.5 px-3 font-mono font-bold text-cyan-400">git reset --mixed HEAD~1</td>
+                <td class="py-2.5 px-3">Mundur 1 commit</td>
+                <td class="py-2.5 px-3 text-amber-300">Dikosongkan (Unstaged)</td>
+                <td class="py-2.5 px-3 text-emerald-300">Aman 100% (Editan tetap ada)</td>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-300 font-mono text-xs">Aman (Default)</span></td>
+              </tr>
+              <tr>
+                <td class="py-2.5 px-3 font-mono font-bold text-rose-400">git reset --hard HEAD~1</td>
+                <td class="py-2.5 px-3">Mundur 1 commit</td>
+                <td class="py-2.5 px-3 text-rose-400">Dihapus total</td>
+                <td class="py-2.5 px-3 text-rose-400">Dihapus total (Kembali bersih)</td>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-rose-500/15 text-rose-300 font-mono text-xs">Berbahaya</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Commands Grid (40 Cards) -->
+      <div id="commands-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Empty Search State -->
+      <div id="empty-search" class="hidden text-center py-14 px-4 rounded-3xl glass-card">
+        <i data-lucide="search-x" class="w-10 h-10 text-slate-500 mx-auto mb-3"></i>
+        <h3 class="text-lg font-bold text-white">Perintah tidak ditemukan</h3>
+        <p class="text-sm text-slate-400 mt-1">Coba kata kunci lain atau klik tombol "Semua (40)" pada filter level.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#060910] py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2.5">
+        <i data-lucide="git-branch" class="w-5 h-5 text-emerald-400"></i>
+        <span class="font-bold text-white">Git<span class="text-emerald-400">Sepuh</span>.id</span>
+        <span class="text-xs text-slate-500">— Dokumentasi &amp; Lab Simulasi Git Bahasa Indonesia</span>
+      </div>
+      <div class="text-xs text-slate-400 font-mono text-center sm:text-right">
+        Selalu biasakan <span class="text-cyan-400">git status</span> sebelum menekan Enter! 🚀
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- 8. SLIDE-OVER MODAL DRAWER: "🚨 TOMBOL PANIK! — PENYELAMAT DARURAT" -->
+  <!-- ===================================================================== -->
+  <div id="panic-drawer-overlay" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm transition-opacity" onclick="closePanicDrawer()"></div>
+
+  <aside
+    id="panic-drawer-panel"
+    aria-label="Modal Tombol Panik Penyelamat Darurat"
+    class="fixed top-0 right-0 z-50 h-full w-full max-w-2xl bg-[#090d16] border-l border-rose-500/40 shadow-2xl transform translate-x-full flex flex-col"
+  >
+    <!-- Drawer Header -->
+    <div class="p-5 bg-gradient-to-r from-rose-950/60 to-[#111827] border-b border-[#1e293b] flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-xl">
+          🚨
+        </div>
+        <div>
+          <h2 class="font-extrabold text-white text-base sm:text-lg">Tombol Panik! — Penyelamat Darurat (8 Skenario)</h2>
+          <p class="text-xs text-rose-300">Tarik napas! Pilih situasi daruratmu di bawah ini:</p>
+        </div>
+      </div>
+      <button onclick="closePanicDrawer()" aria-label="Tutup Modal" class="p-2 rounded-xl bg-[#111827] hover:bg-slate-800 text-slate-300 hover:text-white border border-[#1e293b] cursor-pointer">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Drawer Content -->
+    <div class="p-5 overflow-y-auto flex-1 space-y-5">
+      <div id="panic-drawer-tabs" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div id="panic-drawer-guide" class="rounded-2xl bg-[#111827] border border-emerald-500/30 p-4 sm:p-5 space-y-4">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT LOGIC -->
+  <!-- ===================================================================== -->
+  <script>
+    // =========================================================================
+    // DATA 1: 13 SKENARIO SIMULATOR ERROR GIT & AKAR PENYEBABNYA
+    // =========================================================================
+    const GIT_ERRORS = [
+      {
+        id: 'fetch-first',
+        category: 'Push & Pull',
+        shortTitle: '! [rejected] main -> main (fetch first)',
+        fullTitle: '! [rejected] main -> main (fetch first)',
+        terminalLines: [
+          { type: 'cmd', text: '$ git push -u origin main' },
+          { type: 'normal', text: 'To https://github.com/Exicobt/edutest.git' },
+          { type: 'error', text: ' ! [rejected]        main -> main (fetch first)' },
+          { type: 'error', text: "error: failed to push some refs to 'https://github.com/Exicobt/edutest.git'" },
+          { type: 'hint', text: 'hint: Updates were rejected because the remote contains work that you do not' },
+          { type: 'hint', text: 'hint: have locally. This is usually caused by another repository pushing to' },
+          { type: 'hint', text: 'hint: the same ref. If you want to integrate the remote changes, use' },
+          { type: 'hint', text: "hint: 'git pull' before pushing again." },
+          { type: 'hint', text: "hint: See the 'Note about fast-forwards' in 'git push --help' for details." }
+        ],
+        summaryIndo: 'Terjadi divergent history (sejarah bercabang). Di repository remote GitHub (Exicobt/edutest.git) sudah ada commit baru—misalnya file README.md atau .gitignore yang otomatis dibuat saat kamu mencentang opsi inisialisasi di web GitHub—yang belum ada di laptopmu. Git menolak git push karena tidak mau menimpa pekerjaan yang sudah ada di GitHub.',
+        lineBreakdown: [
+          { raw: '! [rejected] main -> main (fetch first)', meaning: 'Push ke branch main ditolak; kamu wajib mengambil (fetch/pull) update dari GitHub terlebih dahulu.' },
+          { raw: 'hint: Updates were rejected because the remote contains work that you do not have locally', meaning: 'Di server remote (GitHub) ada commit yang belum kamu miliki di komputer lokal.' }
+        ],
+        solutionHow: 'Perintah git pull --rebase origin main mengunduh commit dari GitHub lalu meletakkan commit lokalmu rapi di atasnya. Setelah sinkron, git push -u origin main berjalan mulus tanpa perlu --force.',
+        diagramBefore: `
+          <svg viewBox="0 0 640 130" class="w-full min-w-[480px] h-28">
+            <rect x="10" y="14" width="280" height="102" rx="12" fill="#111827" stroke="#f43f5e" stroke-width="1.5"/>
+            <text x="25" y="36" fill="#34d399" font-family="JetBrains Mono" font-size="11" font-weight="700">💻 Local Laptop (main)</text>
+            <circle cx="55" cy="72" r="12" fill="#10b981"/><text x="55" y="76" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">C1</text>
+            <line x1="67" y1="72" x2="125" y2="72" stroke="#10b981" stroke-width="3"/>
+            <circle cx="137" cy="72" r="12" fill="#06b6d4"/><text x="137" y="76" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">C2</text>
+            <text x="160" y="76" fill="#67e8f9" font-family="JetBrains Mono" font-size="10">(Kode barumu)</text>
+
+            <text x="320" y="68" text-anchor="middle" fill="#f43f5e" font-family="JetBrains Mono" font-size="12" font-weight="800">✖ DITOLAK</text>
+            <text x="320" y="84" text-anchor="middle" fill="#94a3b8" font-family="JetBrains Mono" font-size="9">Riwayat beda!</text>
+
+            <rect x="350" y="14" width="280" height="102" rx="12" fill="#111827" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="365" y="36" fill="#c084fc" font-family="JetBrains Mono" font-size="11" font-weight="700">☁️ Remote GitHub (origin/main)</text>
+            <circle cx="395" cy="72" r="12" fill="#10b981"/><text x="395" y="76" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">C1</text>
+            <line x1="407" y1="72" x2="465" y2="72" stroke="#f59e0b" stroke-width="3"/>
+            <circle cx="477" cy="72" r="12" fill="#f59e0b"/><text x="477" y="76" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">R1</text>
+            <text x="500" y="76" fill="#fcd34d" font-family="JetBrains Mono" font-size="10">(README GitHub)</text>
+          </svg>
+        `,
+        diagramAfter: `
+          <svg viewBox="0 0 640 130" class="w-full min-w-[480px] h-28">
+            <rect x="10" y="14" width="620" height="102" rx="12" fill="#064e3b" fill-opacity="0.25" stroke="#10b981" stroke-width="1.5"/>
+            <text x="25" y="36" fill="#34d399" font-family="JetBrains Mono" font-size="11" font-weight="700">✅ Local Laptop &amp; Remote GitHub Sudah Sinkron 100%!</text>
+            <circle cx="65" cy="75" r="13" fill="#10b981"/><text x="65" y="79" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">C1</text>
+            <line x1="78" y1="75" x2="175" y2="75" stroke="#10b981" stroke-width="3"/>
+            <circle cx="188" cy="75" r="13" fill="#f59e0b"/><text x="188" y="79" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">R1</text>
+            <line x1="201" y1="75" x2="298" y2="75" stroke="#10b981" stroke-width="3"/>
+            <circle cx="311" cy="75" r="13" fill="#06b6d4"/><text x="311" y="79" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">C2'</text>
+            <text x="345" y="79" fill="#a7f3d0" font-family="JetBrains Mono" font-size="11">R1 (GitHub) + C2' (Kodemu) tergabung mulus!</text>
+          </svg>
+        `,
+        fixSteps: [
+          {
+            label: 'Langkah 1: git pull --rebase origin main',
+            cmd: '$ git pull --rebase origin main',
+            output: [
+              { type: 'normal', text: 'From https://github.com/Exicobt/edutest' },
+              { type: 'normal', text: ' * branch            main       -> FETCH_HEAD' },
+              { type: 'success', text: 'Successfully rebased and updated refs/heads/main.' }
+            ]
+          },
+          {
+            label: 'Langkah 2: git push -u origin main',
+            cmd: '$ git push -u origin main',
+            output: [
+              { type: 'normal', text: 'Enumerating objects: 5, done.' },
+              { type: 'normal', text: 'Writing objects: 100% (3/3), 380 bytes | 380.00 KiB/s, done.' },
+              { type: 'success', text: 'To https://github.com/Exicobt/edutest.git' },
+              { type: 'success', text: '   a81f2c0..9b4e11d  main -> main' },
+              { type: 'success', text: "branch 'main' set up to track 'origin/main'." }
+            ]
+          }
+        ],
+        beginnerTrap: 'JANGAN asal memakai git push --force (-f) hanya supaya push-nya tembus! Perintah --force akan menghapus paksa commit milik rekan tim (atau file README/License) yang ada di GitHub.'
+      },
+      {
+        id: 'unrelated-histories',
+        category: 'Merge & Conflict',
+        shortTitle: 'fatal: refusing to merge unrelated histories',
+        fullTitle: 'fatal: refusing to merge unrelated histories',
+        terminalLines: [
+          { type: 'cmd', text: '$ git pull origin main' },
+          { type: 'normal', text: 'From https://github.com/Exicobt/edutest' },
+          { type: 'normal', text: ' * branch            main       -> FETCH_HEAD' },
+          { type: 'error', text: 'fatal: refusing to merge unrelated histories' }
+        ],
+        summaryIndo: 'Kamu sudah terlanjur membuat git init dan git commit di folder laptop, lalu di saat terpisah membuat repo baru di GitHub yang juga sudah memiliki commit awal (README.md). Karena keduanya lahir dari dua akar commit pertama (root commit) yang berbeda, Git menolak menggabungkannya secara default.',
+        lineBreakdown: [
+          { raw: 'refusing to merge unrelated histories', meaning: 'Git menolak menggabungkan dua repositori yang riwayat awal (root commit)-nya tidak berhubungan sama sekali.' }
+        ],
+        solutionHow: 'Menambahkan flag --allow-unrelated-histories saat melakukan git pull memberi izin eksplisit kepada Git untuk menyatukan dua garis sejarah yang berbeda tersebut.',
+        diagramBefore: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <circle cx="70" cy="42" r="12" fill="#06b6d4"/><text x="70" y="46" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="9" font-weight="800">L1</text>
+            <text x="95" y="46" fill="#67e8f9" font-family="JetBrains Mono" font-size="10">Akar Lokal (Tanpa induk sama)</text>
+            <circle cx="70" cy="82" r="12" fill="#a855f7"/><text x="70" y="86" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="9" font-weight="800">G1</text>
+            <text x="95" y="86" fill="#d8b4fe" font-family="JetBrains Mono" font-size="10">Akar GitHub (README.md)</text>
+          </svg>
+        `,
+        diagramAfter: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <circle cx="70" cy="42" r="11" fill="#06b6d4"/><text x="70" y="46" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="9" font-weight="800">L1</text>
+            <circle cx="70" cy="82" r="11" fill="#a855f7"/><text x="70" y="86" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="9" font-weight="800">G1</text>
+            <line x1="81" y1="42" x2="170" y2="62" stroke="#10b981" stroke-width="2.5"/>
+            <line x1="81" y1="82" x2="170" y2="62" stroke="#10b981" stroke-width="2.5"/>
+            <circle cx="182" cy="62" r="13" fill="#10b981"/><text x="182" y="66" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="9" font-weight="800">M2</text>
+            <text x="208" y="66" fill="#34d399" font-family="JetBrains Mono" font-size="10">✅ Diizinkan bergabung dengan --allow-unrelated-histories!</text>
+          </svg>
+        `,
+        fixSteps: [
+          {
+            label: 'Langkah 1: git pull origin main --allow-unrelated-histories',
+            cmd: '$ git pull origin main --allow-unrelated-histories',
+            output: [
+              { type: 'normal', text: "Merge made by the 'ort' strategy." },
+              { type: 'success', text: ' README.md | 4 ++++' }
+            ]
+          },
+          {
+            label: 'Langkah 2: git push -u origin main',
+            cmd: '$ git push -u origin main',
+            output: [
+              { type: 'success', text: 'To https://github.com/Exicobt/edutest.git' },
+              { type: 'success', text: '   1122a3b..7788c9d  main -> main' }
+            ]
+          }
+        ],
+        beginnerTrap: 'Saat membuat repository baru di GitHub untuk proyek yang sudah ada di laptopmu, biarkan opsi "Add a README file" dan ".gitignore" dalam keadaan tidak dicentang agar repo GitHub kosong bersih.'
+      },
+      {
+        id: 'merge-conflict',
+        category: 'Merge & Conflict',
+        shortTitle: 'CONFLICT (content): Merge conflict in app.js',
+        fullTitle: 'CONFLICT (content): Merge conflict in app.js',
+        hasMiniEditor: true,
+        terminalLines: [
+          { type: 'cmd', text: '$ git merge fitur-diskon' },
+          { type: 'normal', text: 'Auto-merging app.js' },
+          { type: 'error', text: 'CONFLICT (content): Merge conflict in app.js' },
+          { type: 'error', text: 'Automatic merge failed; fix conflicts and then commit the result.' }
+        ],
+        summaryIndo: 'Ini BUKAN kerusakan sistem! Branch main dan branch fitur-diskon sama-sama mengubah baris kode yang persis sama di file app.js. Git tidak berani menebak baris mana yang benar, jadi proses merge dijeda sampai kamu memilih kode finalnya.',
+        lineBreakdown: [
+          { raw: 'CONFLICT (content): Merge conflict in app.js', meaning: 'Ada bentrokan isi kode pada baris yang sama di dalam file app.js.' },
+          { raw: 'Automatic merge failed; fix conflicts and then commit the result.', meaning: 'Penggabungan otomatis dijeda; selesaikan tanda konflik di editor, lalu git add dan git commit.' }
+        ],
+        solutionHow: 'Setelah memilih kode mana yang dipertahankan dan menghapus tanda <<<<<<<, =======, >>>>>>>, perintah git add menandai konflik selesai dan git commit menyegel hasil penggabungan.',
+        diagramBefore: `
+          <svg viewBox="0 0 640 115" class="w-full min-w-[480px] h-24">
+            <rect x="15" y="15" width="260" height="82" rx="10" fill="#111827" stroke="#06b6d4"/>
+            <text x="30" y="38" fill="#67e8f9" font-family="JetBrains Mono" font-size="11">HEAD (main): harga = 50000</text>
+            <text x="30" y="60" fill="#f43f5e" font-family="JetBrains Mono" font-size="11" font-weight="700">⚡ BENTROK BARIS #4!</text>
+            <text x="30" y="80" fill="#d8b4fe" font-family="JetBrains Mono" font-size="11">fitur-diskon: harga = 75000</text>
+            <text x="305" y="60" fill="#94a3b8" font-family="JetBrains Mono" font-size="11">→ Selesaikan di Mini Editor di bawah!</text>
+          </svg>
+        `,
+        diagramAfter: `
+          <svg viewBox="0 0 640 115" class="w-full min-w-[480px] h-24">
+            <rect x="15" y="15" width="610" height="82" rx="10" fill="#064e3b" fill-opacity="0.25" stroke="#10b981"/>
+            <text x="30" y="45" fill="#34d399" font-family="JetBrains Mono" font-size="12" font-weight="700">✅ Konflik app.js Selesai &amp; Di-commit!</text>
+            <text x="30" y="70" fill="#a7f3d0" font-family="JetBrains Mono" font-size="11">Penanda &lt;&lt;&lt;&lt;&lt;&lt;&lt;, =======, &gt;&gt;&gt;&gt;&gt;&gt;&gt; sudah bersih dan merge selesai.</text>
+          </svg>
+        `,
+        fixSteps: [
+          {
+            label: 'Langkah 1: git add app.js (Setelah pilih solusi di Mini Editor)',
+            cmd: '$ git add app.js',
+            requiresConflictResolved: true,
+            output: [
+              { type: 'success', text: '# Konflik pada app.js ditandai sudah selesai (marked as resolved).' }
+            ]
+          },
+          {
+            label: 'Langkah 2: git commit -m "fix: selesaikan merge conflict"',
+            cmd: '$ git commit -m "fix: selesaikan merge conflict"',
+            output: [
+              { type: 'success', text: '[main 8d21f4e] fix: selesaikan merge conflict' }
+            ]
+          }
+        ],
+        beginnerTrap: 'JANGAN langsung menjalankan git add . dan git commit tanpa menghapus tanda <<<<<<< HEAD, =======, dan >>>>>>> terlebih dahulu! Jika tanda itu ikut ter-commit, kode aplikasimu akan syntax error.'
+      },
+      {
+        id: 'detached-head',
+        category: 'Branch & Stash',
+        shortTitle: "You are in 'detached HEAD' state",
+        fullTitle: "Note: switching to 'e4f5g6h'. You are in 'detached HEAD' state.",
+        terminalLines: [
+          { type: 'cmd', text: '$ git checkout e4f5g6h' },
+          { type: 'hint', text: "Note: switching to 'e4f5g6h'." },
+          { type: 'hint', text: "You are in 'detached HEAD' state. You can look around, make experimental" },
+          { type: 'hint', text: 'changes and commit them, and you can discard any commits you make in this' },
+          { type: 'hint', text: 'state without impacting any branches by switching back to a branch.' },
+          { type: 'normal', text: 'HEAD is now at e4f5g6h feat: tambah landing page' }
+        ],
+        summaryIndo: 'Normalnya pointer HEAD menempel pada nama branch (misal main). Ketika kamu melakukan checkout langsung ke kode hash commit lama, HEAD lepas dari nama branch mana pun. Jika membuat commit baru di sini tanpa membuat branch, commit itu bisa yatim piatu dan hilang.',
+        lineBreakdown: [
+          { raw: "You are in 'detached HEAD' state", meaning: 'Kamu sedang menengok masa lalu di commit e4f5g6h tanpa berada di branch aktif.' }
+        ],
+        solutionHow: 'Jika hanya melihat-lihat, kembali ke main lewat git switch main. Jika ingin menyimpan eksperimen baru dari titik masa lalu itu, ikat ke branch baru memakai git switch -c.',
+        diagramBefore: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <circle cx="80" cy="65" r="12" fill="#10b981"/><text x="80" y="69" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">C1</text>
+            <line x1="92" y1="65" x2="180" y2="65" stroke="#10b981" stroke-width="3"/>
+            <circle cx="192" cy="65" r="12" fill="#10b981"/><text x="192" y="69" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">C2</text>
+            <rect x="62" y="22" width="38" height="18" rx="4" fill="#f59e0b"/><text x="81" y="34" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="9" font-weight="800">HEAD</text>
+            <rect x="172" y="22" width="40" height="18" rx="4" fill="#10b981"/><text x="192" y="34" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="9" font-weight="800">main</text>
+            <text x="235" y="68" fill="#fcd34d" font-family="JetBrains Mono" font-size="10">HEAD terpisah dari main!</text>
+          </svg>
+        `,
+        diagramAfter: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <circle cx="80" cy="65" r="12" fill="#10b981"/><text x="80" y="69" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">C1</text>
+            <line x1="92" y1="65" x2="180" y2="65" stroke="#10b981" stroke-width="3"/>
+            <circle cx="192" cy="65" r="12" fill="#10b981"/><text x="192" y="69" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">C2</text>
+            <rect x="155" y="22" width="76" height="18" rx="4" fill="#06b6d4"/><text x="193" y="34" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="9" font-weight="800">HEAD → main</text>
+            <text x="255" y="68" fill="#34d399" font-family="JetBrains Mono" font-size="10">✅ HEAD kembali menempel ke branch!</text>
+          </svg>
+        `,
+        fixSteps: [
+          {
+            label: 'Langkah 1: Balik ke branch main (git switch main)',
+            cmd: '$ git switch main',
+            output: [
+              { type: 'success', text: 'Previous HEAD position was e4f5g6h feat: tambah landing page' },
+              { type: 'success', text: "Switched to branch 'main'" }
+            ]
+          }
+        ],
+        beginnerTrap: 'Kalau kamu sudah terlanjur melakukan git commit saat berada di mode Detached HEAD, JANGAN langsung git switch main! Buat branch baru dulu dengan git switch -c nama-branch agar commit-mu terselamatkan.'
+      },
+      {
+        id: 'overwritten-by-checkout',
+        category: 'Branch & Stash',
+        shortTitle: 'Your local changes would be overwritten by checkout',
+        fullTitle: 'error: Your local changes to the following files would be overwritten by checkout',
+        terminalLines: [
+          { type: 'cmd', text: '$ git switch main' },
+          { type: 'error', text: 'error: Your local changes to the following files would be overwritten by checkout:' },
+          { type: 'error', text: '        src/navbar.js' },
+          { type: 'hint', text: 'Please commit your changes or stash them before you switch branches.' },
+          { type: 'error', text: 'Aborting' }
+        ],
+        summaryIndo: 'Kamu sedang mengedit file src/navbar.js tapi belum di-commit, lalu mencoba pindah ke branch lain yang juga punya versi berbeda dari src/navbar.js. Git membatalkan perpindahan agar ketikanmu yang belum disimpan tidak tertimpa.',
+        lineBreakdown: [
+          { raw: 'Your local changes ... would be overwritten by checkout', meaning: 'Perubahan file lokalmu bakal tertimpa kalau kamu memaksa pindah branch sekarang.' },
+          { raw: 'Please commit your changes or stash them before you switch branches', meaning: 'Simpan dulu kerjaanmu (commit) atau masukkan ke laci sementara (git stash).' }
+        ],
+        solutionHow: 'Perintah git stash menyembunyikan editan setengah jadi ke laci sementara sehingga folder kerja bersih. Setelah pindah branch, kamu bisa memanggilnya lagi dengan git stash pop.',
+        diagramBefore: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <rect x="20" y="20" width="380" height="68" rx="10" fill="#111827" stroke="#f59e0b"/>
+            <text x="35" y="46" fill="#fcd34d" font-family="JetBrains Mono" font-size="11" font-weight="700">⚠️ src/navbar.js masih kotor (Uncommitted)</text>
+            <text x="35" y="68" fill="#fda4af" font-family="JetBrains Mono" font-size="10">Pindah ke main diblokir demi menyelamatkan kodemu!</text>
+          </svg>
+        `,
+        diagramAfter: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <rect x="20" y="20" width="440" height="68" rx="10" fill="#064e3b" fill-opacity="0.25" stroke="#10b981"/>
+            <text x="35" y="46" fill="#34d399" font-family="JetBrains Mono" font-size="11" font-weight="700">📦 Disimpan ke Laci Stash → Pindah ke main Sukses!</text>
+            <text x="35" y="68" fill="#a7f3d0" font-family="JetBrains Mono" font-size="10">Nanti tinggal ketik git stash pop untuk mengambil editanmu lagi.</text>
+          </svg>
+        `,
+        fixSteps: [
+          {
+            label: 'Langkah 1: Simpan sementara ke laci (git stash)',
+            cmd: '$ git stash push -m "wip: edit navbar"',
+            output: [
+              { type: 'success', text: 'Saved working directory and index state On fitur-ui: wip: edit navbar' }
+            ]
+          },
+          {
+            label: 'Langkah 2: Pindah branch dengan mulus (git switch main)',
+            cmd: '$ git switch main',
+            output: [
+              { type: 'success', text: "Switched to branch 'main'" }
+            ]
+          }
+        ],
+        beginnerTrap: 'Hindari memakai git switch -f (--force) karena flag -f akan membuang perubahan lokalmu yang belum di-commit tanpa ampun!'
+      },
+      {
+        id: 'index-lock',
+        category: 'Commit & Lock',
+        shortTitle: "Unable to create '.git/index.lock': File exists",
+        fullTitle: "fatal: Unable to create '/proyek/.git/index.lock': File exists.",
+        terminalLines: [
+          { type: 'cmd', text: '$ git add .' },
+          { type: 'error', text: "fatal: Unable to create '/Users/dev/edutest/.git/index.lock': File exists." },
+          { type: 'hint', text: 'Another git process seems to be running in this repository, e.g.' },
+          { type: 'hint', text: 'an editor opened by \'git commit\'. Please make sure all processes' },
+          { type: 'hint', text: 'are terminated then try again.' }
+        ],
+        summaryIndo: 'Setiap kali Git menjalankan perintah yang mengubah Staging Area, Git membuat file kunci sementara bernama index.lock agar dua proses Git tidak saling bertabrakan. Jika VS Code atau terminal tiba-tiba crash/force-close saat Git bekerja, file gembok ini tertinggal dan mengunci repositori.',
+        lineBreakdown: [
+          { raw: "Unable to create '.../.git/index.lock': File exists", meaning: 'File gembok .git/index.lock masih tertinggal sehingga perintah Git baru ditolak.' }
+        ],
+        solutionHow: 'Setelah memastikan tidak ada proses Git atau auto-fetch editor yang sedang berjalan, menghapus file .git/index.lock akan langsung membuka kunci repositori dengan aman.',
+        diagramBefore: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <rect x="20" y="20" width="430" height="68" rx="10" fill="#111827" stroke="#f43f5e"/>
+            <text x="35" y="46" fill="#fda4af" font-family="JetBrains Mono" font-size="11" font-weight="700">🔒 .git/index.lock Tertinggal Akibat Crash</text>
+            <text x="35" y="68" fill="#94a3b8" font-family="JetBrains Mono" font-size="10">Semua perintah git add / commit / checkout terkunci!</text>
+          </svg>
+        `,
+        diagramAfter: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <rect x="20" y="20" width="430" height="68" rx="10" fill="#064e3b" fill-opacity="0.25" stroke="#10b981"/>
+            <text x="35" y="46" fill="#34d399" font-family="JetBrains Mono" font-size="11" font-weight="700">🔓 Gembok .git/index.lock Dihapus → Git Normal!</text>
+            <text x="35" y="68" fill="#a7f3d0" font-family="JetBrains Mono" font-size="10">Repositori kembali bisa menjalankan git add &amp; commit.</text>
+          </svg>
+        `,
+        fixSteps: [
+          {
+            label: 'Langkah 1: Hapus file gembok yang nyangkut (rm -f .git/index.lock)',
+            cmd: '$ rm -f .git/index.lock',
+            output: [
+              { type: 'success', text: '# File .git/index.lock berhasil dibersihkan.' }
+            ]
+          },
+          {
+            label: 'Langkah 2: Ulangi perintah git add .',
+            cmd: '$ git add . && git status -s',
+            output: [
+              { type: 'success', text: 'M  app.js' }
+            ]
+          }
+        ],
+        beginnerTrap: 'Pastikan tidak ada proses git commit atau rebase yang masih terbuka di tab terminal lain sebelum menghapus .git/index.lock.'
+      },
+      {
+        id: 'auth-publickey',
+        category: 'Push & Pull',
+        shortTitle: 'Permission denied (publickey) / Authentication failed',
+        fullTitle: 'git@github.com: Permission denied (publickey) / Authentication failed',
+        terminalLines: [
+          { type: 'cmd', text: '$ git push origin main' },
+          { type: 'error', text: 'git@github.com: Permission denied (publickey).' },
+          { type: 'error', text: 'fatal: Could not read from remote repository.' },
+          { type: 'hint', text: 'Please make sure you have the correct access rights and the repository exists.' }
+        ],
+        summaryIndo: 'Server GitHub tidak mengenali identitas SSH Key atau Token akunmu. Penyebab umumnya: kunci SSH belum dibuat/ditambahkan ke ssh-agent, kunci publik (.pub) belum ditempel di pengaturan GitHub, atau kredensial HTTPS lama masih tersimpan di laptop.',
+        lineBreakdown: [
+          { raw: 'Permission denied (publickey)', meaning: 'Laptopmu mencoba terhubung lewat SSH, namun GitHub menolak kunci identitasmu.' },
+          { raw: 'Could not read from remote repository', meaning: 'Koneksi ke server GitHub gagal karena autentikasi ditolak.' }
+        ],
+        solutionHow: 'Menambahkan kunci SSH ke ssh-agent (ssh-add) atau memperbarui remote URL / Personal Access Token memastikan GitHub memverifikasi kepemilikan akunmu.',
+        diagramBefore: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <rect x="20" y="20" width="440" height="68" rx="10" fill="#111827" stroke="#f43f5e"/>
+            <text x="35" y="46" fill="#fda4af" font-family="JetBrains Mono" font-size="11" font-weight="700">🔑 Kunci SSH / Token Tidak Cocok dengan Akun GitHub</text>
+            <text x="35" y="68" fill="#94a3b8" font-family="JetBrains Mono" font-size="10">Server menolak koneksi demi keamanan repositori.</text>
+          </svg>
+        `,
+        diagramAfter: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <rect x="20" y="20" width="440" height="68" rx="10" fill="#064e3b" fill-opacity="0.25" stroke="#10b981"/>
+            <text x="35" y="46" fill="#34d399" font-family="JetBrains Mono" font-size="11" font-weight="700">✅ SSH Key Terautentikasi: Hi Exicobt! You\'ve authenticated!</text>
+            <text x="35" y="68" fill="#a7f3d0" font-family="JetBrains Mono" font-size="10">Push &amp; pull berjalan lancar tanpa perlu ketik password lagi.</text>
+          </svg>
+        `,
+        fixSteps: [
+          {
+            label: 'Langkah 1: Muat kunci SSH ke ssh-agent (ssh-add ~/.ssh/id_ed25519)',
+            cmd: '$ ssh-add ~/.ssh/id_ed25519',
+            output: [
+              { type: 'success', text: 'Identity added: /Users/dev/.ssh/id_ed25519 (budi@dev.id)' }
+            ]
+          },
+          {
+            label: 'Langkah 2: Tes koneksi ke GitHub (ssh -T git@github.com)',
+            cmd: '$ ssh -T git@github.com',
+            output: [
+              { type: 'success', text: "Hi Exicobt! You've successfully authenticated, but GitHub does not provide shell access." }
+            ]
+          }
+        ],
+        beginnerTrap: 'GitHub sudah tidak menerima password akun biasa saat git push via HTTPS. Gunakan SSH Key atau Personal Access Token (PAT).'
+      },
+      {
+        id: 'no-upstream-branch',
+        category: 'Push & Pull',
+        shortTitle: 'fatal: The current branch has no upstream branch',
+        fullTitle: 'fatal: The current branch fitur-login has no upstream branch.',
+        terminalLines: [
+          { type: 'cmd', text: '$ git push' },
+          { type: 'error', text: 'fatal: The current branch fitur-login has no upstream branch.' },
+          { type: 'hint', text: 'To push the current branch and set the remote as upstream, use' },
+          { type: 'hint', text: '    git push --set-upstream origin fitur-login' }
+        ],
+        summaryIndo: 'Kamu baru membuat branch baru di laptop (git switch -c fitur-login) dan langsung mengetik git push singkat. Karena branch fitur-login belum ada pasangannya di GitHub, Git belum tahu harus mengirim branch ini ke mana.',
+        lineBreakdown: [
+          { raw: 'has no upstream branch', meaning: 'Branch lokal ini belum diikat (tracking) dengan branch mana pun di server remote origin.' }
+        ],
+        solutionHow: 'Flag -u (singkatan dari --set-upstream) membuat branch baru di GitHub sekaligus mengikat jalur permanennya, sehingga ke depannya kamu cukup mengetik git push saja.',
+        diagramBefore: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <rect x="20" y="20" width="440" height="68" rx="10" fill="#111827" stroke="#f59e0b"/>
+            <text x="35" y="46" fill="#fcd34d" font-family="JetBrains Mono" font-size="11" font-weight="700">🧭 Lokal: fitur-login  ---[❓ Belum Terikat]---&gt;  GitHub</text>
+            <text x="35" y="68" fill="#94a3b8" font-family="JetBrains Mono" font-size="10">Gunakan flag -u sekali saat push pertama kali!</text>
+          </svg>
+        `,
+        diagramAfter: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <rect x="20" y="20" width="460" height="68" rx="10" fill="#064e3b" fill-opacity="0.25" stroke="#10b981"/>
+            <text x="35" y="46" fill="#34d399" font-family="JetBrains Mono" font-size="11" font-weight="700">✅ Lokal: fitur-login  &lt;===[Upstream Terikat]===&gt;  origin/fitur-login</text>
+            <text x="35" y="68" fill="#a7f3d0" font-family="JetBrains Mono" font-size="10">Push berikutnya cukup ketik: git push</text>
+          </svg>
+        `,
+        fixSteps: [
+          {
+            label: 'Langkah 1: Push & ikat upstream (git push -u origin fitur-login)',
+            cmd: '$ git push -u origin fitur-login',
+            output: [
+              { type: 'success', text: ' * [new branch]      fitur-login -> fitur-login' },
+              { type: 'success', text: "branch 'fitur-login' set up to track 'origin/fitur-login'." }
+            ]
+          }
+        ],
+        beginnerTrap: 'Kamu bisa mengatur Git agar otomatis membuat upstream saat git push pertama kali lewat: git config --global push.autoSetupRemote true.'
+      },
+      {
+        id: 'non-fast-forward',
+        category: 'Push & Pull',
+        shortTitle: '! [rejected] main -> main (non-fast-forward)',
+        fullTitle: '! [rejected] main -> main (non-fast-forward)',
+        terminalLines: [
+          { type: 'cmd', text: '$ git push origin main' },
+          { type: 'error', text: ' ! [rejected]        main -> main (non-fast-forward)' },
+          { type: 'error', text: "error: failed to push some refs to 'https://github.com/tim/app.git'" },
+          { type: 'hint', text: 'hint: Updates were rejected because the tip of your current branch is behind' },
+          { type: 'hint', text: 'hint: its remote counterpart. Integrate the remote changes before pushing again.' }
+        ],
+        summaryIndo: 'Ujung branch lokalmu tertinggal di belakang commit terbaru yang sudah di-push rekan timmu ke branch yang sama, sehingga Git tidak bisa langsung menempel lurus (fast-forward) commit barumu.',
+        lineBreakdown: [
+          { raw: '(non-fast-forward)', meaning: 'Commit barumu tidak bisa langsung ditempel lurus karena jalur remote sudah maju duluan.' }
+        ],
+        solutionHow: 'Menjalankan git pull akan menyatukan commit terbaru temanmu dengan commit lokalmu sehingga push kembali diizinkan.',
+        diagramBefore: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <text x="20" y="30" fill="#94a3b8" font-family="JetBrains Mono" font-size="11">Jalur bercabang: Kamu (C2) vs Rekan Tim di Remote (T2)</text>
+            <circle cx="60" cy="70" r="12" fill="#10b981"/><text x="60" y="74" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">C1</text>
+            <line x1="72" y1="70" x2="160" y2="48" stroke="#06b6d4" stroke-width="2.5"/>
+            <line x1="72" y1="70" x2="160" y2="92" stroke="#a855f7" stroke-width="2.5"/>
+            <circle cx="172" cy="48" r="12" fill="#06b6d4"/><text x="172" y="52" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">C2</text>
+            <circle cx="172" cy="92" r="12" fill="#a855f7"/><text x="172" y="96" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="10" font-weight="800">T2</text>
+          </svg>
+        `,
+        diagramAfter: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <text x="20" y="30" fill="#34d399" font-family="JetBrains Mono" font-size="11">✅ Tergabung lewat Merge Commit (M3) dan siap di-push!</text>
+            <circle cx="60" cy="70" r="12" fill="#10b981"/><text x="60" y="74" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">C1</text>
+            <circle cx="160" cy="48" r="11" fill="#06b6d4"/><text x="160" y="52" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">C2</text>
+            <circle cx="160" cy="92" r="11" fill="#a855f7"/><text x="160" y="96" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="10" font-weight="800">T2</text>
+            <line x1="171" y1="48" x2="255" y2="70" stroke="#10b981" stroke-width="2.5"/>
+            <line x1="171" y1="92" x2="255" y2="70" stroke="#10b981" stroke-width="2.5"/>
+            <circle cx="268" cy="70" r="13" fill="#10b981"/><text x="268" y="74" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">M3</text>
+          </svg>
+        `,
+        fixSteps: [
+          {
+            label: 'Langkah 1: git pull origin main',
+            cmd: '$ git pull origin main',
+            output: [
+              { type: 'normal', text: "Merge made by the 'ort' strategy." },
+              { type: 'success', text: ' fitur-teman.js | 12 ++++++++++++' }
+            ]
+          },
+          {
+            label: 'Langkah 2: git push origin main',
+            cmd: '$ git push origin main',
+            output: [
+              { type: 'success', text: 'To https://github.com/tim/app.git' },
+              { type: 'success', text: '   4f11a90..c82d10a  main -> main' }
+            ]
+          }
+        ],
+        beginnerTrap: 'Jangan menghapus folder proyek lalu clone ulang hanya karena kena non-fast-forward! Cukup lakukan git pull.'
+      },
+      {
+        id: 'not-a-git-repo',
+        category: 'Commit & Lock',
+        shortTitle: 'fatal: not a git repository (.git)',
+        fullTitle: 'fatal: not a git repository (or any of the parent directories): .git',
+        terminalLines: [
+          { type: 'cmd', text: '$ git status' },
+          { type: 'error', text: 'fatal: not a git repository (or any of the parent directories): .git' }
+        ],
+        summaryIndo: 'Kamu menjalankan perintah Git di dalam folder biasa yang belum diinisialisasi dengan git init, atau terminalmu belum masuk (cd) ke dalam folder proyek yang benar.',
+        lineBreakdown: [
+          { raw: 'fatal: not a git repository', meaning: 'Folder tempat terminalmu berada saat ini bukan folder proyek Git.' }
+        ],
+        solutionHow: 'Menjalankan git init menciptakan folder tersembunyi .git yang menyimpan seluruh database riwayat proyek.',
+        diagramBefore: `
+          <svg viewBox="0 0 640 100" class="w-full min-w-[480px] h-20">
+            <rect x="20" y="15" width="320" height="65" rx="10" fill="#111827" stroke="#f43f5e"/>
+            <text x="35" y="42" fill="#fda4af" font-family="JetBrains Mono" font-size="11" font-weight="700">📁 ~/Desktop/proyek-ku (Tanpa .git)</text>
+            <text x="35" y="62" fill="#94a3b8" font-family="JetBrains Mono" font-size="10">Git belum diaktifkan di folder ini!</text>
+          </svg>
+        `,
+        diagramAfter: `
+          <svg viewBox="0 0 640 100" class="w-full min-w-[480px] h-20">
+            <rect x="20" y="15" width="360" height="65" rx="10" fill="#064e3b" fill-opacity="0.25" stroke="#10b981"/>
+            <text x="35" y="42" fill="#34d399" font-family="JetBrains Mono" font-size="11" font-weight="700">📁 ~/Desktop/proyek-ku/.git ✅</text>
+            <text x="35" y="62" fill="#a7f3d0" font-family="JetBrains Mono" font-size="10">Repositori Git aktif &amp; siap mencatat commit!</text>
+          </svg>
+        `,
+        fixSteps: [
+          {
+            label: 'Langkah 1: Inisialisasi Git (git init -b main)',
+            cmd: '$ git init -b main',
+            output: [
+              { type: 'success', text: 'Initialized empty Git repository in /Users/dev/Desktop/proyek-ku/.git/' }
+            ]
+          }
+        ],
+        beginnerTrap: 'Jangan jalankan git init di folder root seperti C:\\Users\\NamaKamu atau /Desktop! Selalu masuk ke folder proyek spesifik terlebih dahulu.'
+      },
+      {
+        id: 'author-identity-unknown',
+        category: 'Commit & Lock',
+        shortTitle: 'Author identity unknown',
+        fullTitle: 'Author identity unknown / unable to auto-detect email address',
+        terminalLines: [
+          { type: 'cmd', text: '$ git commit -m "first commit"' },
+          { type: 'error', text: 'Author identity unknown' },
+          { type: 'hint', text: '  git config --global user.email "you@example.com"' },
+          { type: 'hint', text: '  git config --global user.name "Your Name"' },
+          { type: 'error', text: 'fatal: unable to auto-detect email address' }
+        ],
+        summaryIndo: 'Kamu baru pertama kali memakai Git di komputer ini dan belum mengisi nama serta alamat email. Git mewajibkan setiap commit memiliki identitas pembuatnya.',
+        lineBreakdown: [
+          { raw: 'Author identity unknown', meaning: 'Git belum tahu nama dan email pemilik laptop ini.' }
+        ],
+        solutionHow: 'Menyimpan user.name dan user.email dengan flag --global mendaftarkan identitasmu sekali untuk semua repositori di laptop.',
+        diagramBefore: `
+          <svg viewBox="0 0 640 100" class="w-full min-w-[480px] h-20">
+            <rect x="20" y="15" width="350" height="65" rx="10" fill="#111827" stroke="#f59e0b"/>
+            <text x="35" y="42" fill="#fcd34d" font-family="JetBrains Mono" font-size="11" font-weight="700">🪪 Kartu Identitas Git: KOSONG</text>
+            <text x="35" y="62" fill="#94a3b8" font-family="JetBrains Mono" font-size="10">user.name &amp; user.email belum diatur.</text>
+          </svg>
+        `,
+        diagramAfter: `
+          <svg viewBox="0 0 640 100" class="w-full min-w-[480px] h-20">
+            <rect x="20" y="15" width="400" height="65" rx="10" fill="#064e3b" fill-opacity="0.25" stroke="#10b981"/>
+            <text x="35" y="42" fill="#34d399" font-family="JetBrains Mono" font-size="11" font-weight="700">🪪 Identitas Terdaftar: Budi &lt;budi@dev.id&gt;</text>
+            <text x="35" y="62" fill="#a7f3d0" font-family="JetBrains Mono" font-size="10">Tersimpan permanen di ~/.gitconfig!</text>
+          </svg>
+        `,
+        fixSteps: [
+          {
+            label: 'Langkah 1: Set Nama & Email Global',
+            cmd: '$ git config --global user.name "Budi" && git config --global user.email "budi@dev.id"',
+            output: [
+              { type: 'success', text: '# Identitas global berhasil disimpan!' }
+            ]
+          },
+          {
+            label: 'Langkah 2: Ulangi Perintah Commit',
+            cmd: '$ git commit -m "first commit"',
+            output: [
+              { type: 'success', text: '[main (root-commit) 3a91c0b] first commit' }
+            ]
+          }
+        ],
+        beginnerTrap: 'Gunakan email yang sama dengan akun GitHub kamu agar kotak hijau kontribusi muncul di profil GitHub-mu.'
+      },
+      {
+        id: 'src-refspec-does-not-match',
+        category: 'Push & Pull',
+        shortTitle: 'error: src refspec main does not match any',
+        fullTitle: 'error: src refspec main does not match any',
+        terminalLines: [
+          { type: 'cmd', text: '$ git push -u origin main' },
+          { type: 'error', text: 'error: src refspec main does not match any' },
+          { type: 'error', text: "error: failed to push some refs to 'https://github.com/Exicobt/edutest.git'" }
+        ],
+        summaryIndo: 'Kamu belum pernah membuat satu pun commit setelah git init (jadi branch main belum lahir), ATAU nama branch lokalmu masih "master" sementara kamu mengetik push ke "main".',
+        lineBreakdown: [
+          { raw: 'src refspec main does not match any', meaning: 'Git tidak menemukan satu pun commit pada referensi branch bernama "main" di lokal.' }
+        ],
+        solutionHow: 'Buat commit pertama terlebih dahulu (git add . && git commit), pastikan nama branch adalah main (git branch -M main), lalu push.',
+        diagramBefore: `
+          <svg viewBox="0 0 640 100" class="w-full min-w-[480px] h-20">
+            <rect x="20" y="15" width="380" height="65" rx="10" fill="#111827" stroke="#f43f5e"/>
+            <text x="35" y="42" fill="#fda4af" font-family="JetBrains Mono" font-size="11" font-weight="700">📭 Local Repo: 0 Commit (Kosong)</text>
+            <text x="35" y="62" fill="#94a3b8" font-family="JetBrains Mono" font-size="10">Tidak ada commit yang bisa di-push!</text>
+          </svg>
+        `,
+        diagramAfter: `
+          <svg viewBox="0 0 640 100" class="w-full min-w-[480px] h-20">
+            <rect x="20" y="15" width="420" height="65" rx="10" fill="#064e3b" fill-opacity="0.25" stroke="#10b981"/>
+            <text x="35" y="42" fill="#34d399" font-family="JetBrains Mono" font-size="11" font-weight="700">✅ Commit #1 Tercipta &amp; Branch Dinamai 'main'</text>
+            <text x="35" y="62" fill="#a7f3d0" font-family="JetBrains Mono" font-size="10">Sekarang git push -u origin main berjalan mulus!</text>
+          </svg>
+        `,
+        fixSteps: [
+          {
+            label: 'Langkah 1: Buat commit pertama & pastikan nama branch main',
+            cmd: '$ git add . && git commit -m "chore: init" && git branch -M main',
+            output: [
+              { type: 'success', text: '[main (root-commit) 5c12a09] chore: init' }
+            ]
+          },
+          {
+            label: 'Langkah 2: Push ke origin main',
+            cmd: '$ git push -u origin main',
+            output: [
+              { type: 'success', text: ' * [new branch]      main -> main' }
+            ]
+          }
+        ],
+        beginnerTrap: 'Urutan wajib proyek baru selalu: git init -> git add . -> git commit -m "..." -> baru git push.'
+      },
+      {
+        id: 'large-files-gh001',
+        category: 'Push & Pull',
+        shortTitle: 'remote: error: GH001: Large files detected (>100MB)',
+        fullTitle: 'remote: error: GH001: Large files detected. File dataset.zip is 145.20 MB; this exceeds GitHub\'s file size limit of 100.00 MB',
+        terminalLines: [
+          { type: 'cmd', text: '$ git push -u origin main' },
+          { type: 'normal', text: 'Writing objects: 100% (4/4), 145.20 MiB | 12.40 MiB/s, done.' },
+          { type: 'error', text: 'remote: error: Trace: 9f8a7b6c5d4e3f2a' },
+          { type: 'error', text: 'remote: error: GH001: Large files detected. You may want to try Git Large File Storage - https://git-lfs.github.com.' },
+          { type: 'error', text: 'remote: error: File assets/dataset.zip is 145.20 MB; this exceeds GitHub\'s file size limit of 100.00 MB' },
+          { type: 'error', text: "error: failed to push some refs to 'https://github.com/Exicobt/edutest.git'" }
+        ],
+        summaryIndo: 'GitHub membatasi ukuran maksimal satu file sebesar 100 MB. Kamu tidak sengaja memasukkan file raksasa (seperti video, dataset, atau folder node_modules / build) ke dalam commit lalu mencoba meng-upload-nya. Sekadar menghapus file tersebut di commit baru tidak cukup karena file besar masih tersimpan di riwayat commit sebelumnya.',
+        lineBreakdown: [
+          { raw: 'GH001: Large files detected ... exceeds GitHub\'s file size limit of 100.00 MB', meaning: 'File assets/dataset.zip (145.20 MB) melebihi batas maksimal 100 MB yang diizinkan GitHub.' }
+        ],
+        solutionHow: 'Mundurkan commit terakhir dengan git reset --soft HEAD~1, keluarkan file besar dari Staging Area memakai git rm --cached, masukkan ke .gitignore, lalu commit ulang tanpa file raksasa tersebut.',
+        diagramBefore: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <rect x="20" y="20" width="460" height="68" rx="10" fill="#111827" stroke="#f43f5e"/>
+            <text x="35" y="46" fill="#fda4af" font-family="JetBrains Mono" font-size="11" font-weight="700">📦 Paket Commit Membawa dataset.zip (145 MB) &gt; 100 MB</text>
+            <text x="35" y="68" fill="#94a3b8" font-family="JetBrains Mono" font-size="10">Ditolak gerbang GitHub (GH001) demi menjaga performa server!</text>
+          </svg>
+        `,
+        diagramAfter: `
+          <svg viewBox="0 0 640 110" class="w-full min-w-[480px] h-24">
+            <rect x="20" y="20" width="460" height="68" rx="10" fill="#064e3b" fill-opacity="0.25" stroke="#10b981"/>
+            <text x="35" y="46" fill="#34d399" font-family="JetBrains Mono" font-size="11" font-weight="700">✅ dataset.zip Dikeluarkan &amp; Masuk .gitignore → Push Sukses!</text>
+            <text x="35" y="68" fill="#a7f3d0" font-family="JetBrains Mono" font-size="10">Atau gunakan Git LFS jika memang wajib menyimpan aset besar.</text>
+          </svg>
+        `,
+        fixSteps: [
+          {
+            label: 'Langkah 1: Batalkan commit terakhir & keluarkan file besar (git reset --soft)',
+            cmd: '$ git reset --soft HEAD~1 && git rm --cached assets/dataset.zip',
+            output: [
+              { type: 'success', text: "rm 'assets/dataset.zip' (File tetap aman di laptopmu, hanya dihapus dari Git)" }
+            ]
+          },
+          {
+            label: 'Langkah 2: Masukkan ke .gitignore, Commit ulang & Push',
+            cmd: '$ echo "assets/dataset.zip" >> .gitignore && git add .gitignore && git commit -m "chore: ignore large zip" && git push -u origin main',
+            output: [
+              { type: 'success', text: '[main 6d19f2a] chore: ignore large zip' },
+              { type: 'success', text: 'To https://github.com/Exicobt/edutest.git — main -> main' }
+            ]
+          }
+        ],
+        beginnerTrap: 'Jangan pernah meng-commit folder node_modules/, vendor/, dist/, atau file video/zip mentah! Selalu siapkan file .gitignore sejak awal proyek.'
+      }
+    ];
+
+    // =========================================================================
+    // DATA 2: ENSIKLOPEDIA LENGKAP TANDA - DAN -- (19 FLAGS)
+    // =========================================================================
+    const GIT_FLAGS = [
+      { flag: '--force / -f', type: 'Long & Short Flag', risk: 'danger', riskLabel: '🔴 Sangat Berbahaya', meaning: 'Memaksa perintah berjalan dengan menimpa riwayat yang ada (sering dipakai pada git push --force).', example: 'git push --force origin main', warning: 'Menghapus paksa commit di GitHub yang tidak ada di laptopmu. Jika kerja tim, commit rekanmu bisa hilang!' },
+      { flag: '--force-with-lease', type: 'Long Flag (Sepuh)', risk: 'warn', riskLabel: '🟡 Hati-hati (Pro)', meaning: 'Versi aman dari --force. Hanya mau menimpa GitHub jika tidak ada rekan tim yang baru saja meng-upload commit baru.', example: 'git push --force-with-lease origin feat-a', warning: 'Standar wajib programer sepuh setelah interactive rebase di branch fitur pribadi.' },
+      { flag: '--hard', type: 'Long Flag (Reset)', risk: 'danger', riskLabel: '🔴 Sangat Berbahaya', meaning: 'Pada git reset --hard, memundurkan commit sekaligus MENGHAPUS TOTAL seluruh perubahan file yang belum di-commit.', example: 'git reset --hard HEAD~1', warning: 'Perubahan file yang belum pernah di-commit akan hilang permanen. Jika pernah di-commit, masih bisa diselamatkan git reflog.' },
+      { flag: '--soft', type: 'Long Flag (Reset)', risk: 'safe', riskLabel: '🟢 Aman', meaning: 'Pada git reset --soft, memundurkan commit terakhir namun menjaga semua perubahan file tetap utuh di Staging Area.', example: 'git reset --soft HEAD~1', warning: 'Sangat aman untuk mengulang atau menggabungkan pesan commit terakhir.' },
+      { flag: '--mixed', type: 'Long Flag (Reset)', risk: 'safe', riskLabel: '🟢 Aman', meaning: 'Mode default git reset. Memundurkan commit & mengosongkan Staging Area, tapi file editan tetap aman di laptop.', example: 'git reset --mixed HEAD~1', warning: 'Tidak menghapus isi ketikan kode di folder kerjamu.' },
+      { flag: '-u / --set-upstream', type: 'Short & Long Flag', risk: 'safe', riskLabel: '🟢 Aman', meaning: 'Mengikat branch lokal dengan branch di server remote secara permanen.', example: 'git push -u origin main', warning: 'Cukup dipakai sekali saat pertama kali push branch baru; selanjutnya cukup ketik git push.' },
+      { flag: '-m / --message', type: 'Short & Long Flag', risk: 'safe', riskLabel: '🟢 Aman', meaning: 'Menuliskan pesan commit secara langsung di baris perintah tanpa membuka editor teks terminal (Vim/Nano).', example: 'git commit -m "feat: tambah login"', warning: 'Mencegah pemula terjebak di layar editor Vim.' },
+      { flag: '-b / -c', type: 'Short Flag (Branch)', risk: 'safe', riskLabel: '🟢 Aman', meaning: 'Membuat branch baru sekaligus langsung berpindah masuk ke dalamnya (git checkout -b atau git switch -c).', example: 'git switch -c feat/pembayaran', warning: 'Selalu pastikan kamu sedang berada di branch main terbaru sebelum membuat branch baru.' },
+      { flag: '--amend', type: 'Long Flag (Commit)', risk: 'warn', riskLabel: '🟡 Hati-hati', meaning: 'Merevisi pesan commit terakhir atau menyelipkan file tertinggal ke dalam commit terakhir tanpa menambah commit baru.', example: 'git commit --amend -m "pesan benar"', warning: 'Jangan gunakan --amend pada commit yang sudah terlanjur di-push ke branch bersama tim!' },
+      { flag: '--staged / --cached', type: 'Long Flag', risk: 'safe', riskLabel: '🟢 Aman', meaning: 'Menargetkan file khusus yang berada di Staging Area tanpa menghapus file fisik di folder laptop.', example: 'git rm --cached .env', warning: 'Sangat ampuh untuk mengeluarkan file rahasia (.env) dari pelacakan Git.' },
+      { flag: '--oneline --graph --all', type: 'Kombinasi Long Flag', risk: 'safe', riskLabel: '🟢 Aman', meaning: 'Menampilkan riwayat seluruh cabang commit dalam format ringkas 1 baris lengkap dengan grafik pohon ASCII.', example: 'git log --oneline --graph --all', warning: 'Cara tercepat memantau struktur percabangan di terminal.' },
+      { flag: '--no-ff', type: 'Long Flag (Merge)', risk: 'safe', riskLabel: '🟢 Aman', meaning: 'No Fast-Forward: memaksa pembuatan diamond merge commit baru meskipun jalur branch lurus.', example: 'git merge --no-ff feat/profil', warning: 'Menjaga jejak sejarah bahwa sekumpulan commit berasal dari satu branch fitur terpisah.' },
+      { flag: '--rebase', type: 'Long Flag (Pull)', risk: 'warn', riskLabel: '🟡 Hati-hati', meaning: 'Pada git pull --rebase, menarik update dari GitHub lalu meletakkan commit lokalmu rapi di atasnya tanpa merge commit.', example: 'git pull --rebase origin main', warning: 'Membuat riwayat proyek lurus linear dan bebas dari merge commit sampah.' },
+      { flag: '--abort', type: 'Long Flag (Penyelamat)', risk: 'safe', riskLabel: '🟢 Aman', meaning: 'Membatalkan proses merge, rebase, atau cherry-pick yang sedang macet karena konflik dan mengembalikan kondisi semula.', example: 'git merge --abort', warning: 'Tombol mundur darurat paling aman saat bingung menghadapi konflik.' },
+      { flag: '--continue', type: 'Long Flag (Lanjut)', risk: 'safe', riskLabel: '🟢 Aman', meaning: 'Melanjutkan proses rebase atau cherry-pick setelah kamu menyelesaikan konflik kode dan menjalankan git add.', example: 'git rebase --continue', warning: 'Pastikan penanda konflik <<<<<<< ======= >>>>>>> sudah dihapus sebelum menjalankan ini.' },
+      { flag: '--allow-unrelated-histories', type: 'Long Flag (Khusus)', risk: 'warn', riskLabel: '🟡 Hati-hati', meaning: 'Mengizinkan git pull atau merge antara dua repositori yang memiliki titik awal (root commit) berbeda.', example: 'git pull origin main --allow-unrelated-histories', warning: 'Solusi ampuh saat repo lokal dan repo GitHub sama-sama punya commit awal terpisah.' },
+      { flag: '-p / --patch', type: 'Short & Long Flag', risk: 'safe', riskLabel: '🟢 Aman', meaning: 'Mode interaktif untuk memilih bagian/hunk kode tertentu saja di dalam 1 file yang ingin dimasukkan ke Staging Area.', example: 'git add -p app.js', warning: 'Jurus sepuh untuk memisahkan perubahan besar menjadi commit-commit kecil yang rapi.' },
+      { flag: '-n / --dry-run', type: 'Short & Long Flag', risk: 'safe', riskLabel: '🟢 Aman', meaning: 'Mode simulasi! Menampilkan daftar file apa saja yang akan terpengaruh tanpa benar-benar mengeksekusi penghapusan/push.', example: 'git clean -nd', warning: 'Wajib dijalankan sebelum perintah pembersih seperti git clean -fd.' },
+      { flag: '-- (Path Separator)', type: 'Pemisah Argumen', risk: 'safe', riskLabel: '🟢 Aman', meaning: 'Dua strip berdiri sendiri untuk memisahkan nama branch/commit di kiri dengan nama file di kanan.', example: 'git checkout -- index.html', warning: 'Mencegah Git bingung jika kebetulan ada nama branch dan nama file yang identik.' }
+    ];
+
+    // =========================================================================
+    // DATA 3: KAMUS PERINTAH GIT LENGKAP (40 PERINTAH)
+    // =========================================================================
+    const GIT_COMMANDS = [
+      // PEMULA (10)
+      { cmd: 'git init -b main', level: 'Pemula', safety: 'Aman', analogy: 'Aktifkan Mesin Waktu di Folder', desc: 'Mengubah folder biasa menjadi repositori Git dan langsung menamai cabang utamanya menjadi main.', code: 'git init -b main', tip: 'Jangan hapus folder tersembunyi .git kecuali ingin menghapus seluruh riwayat proyek.' },
+      { cmd: 'git clone', level: 'Pemula', safety: 'Aman', analogy: 'Download Proyek + Riwayatnya', desc: 'Menyalin repositori dari server remote (GitHub) ke komputer lokal beserta seluruh branch dan riwayat commit.', code: 'git clone https://github.com/user/proyek.git', tip: 'Tambahkan --depth 1 jika hanya butuh kode versi terakhir dari repositori berukuran raksasa.' },
+      { cmd: 'git config --global', level: 'Pemula', safety: 'Aman', analogy: 'Pasang Name Tag Identitas', desc: 'Mengatur nama dan email pemilik laptop sebagai stempel resmi pada setiap commit yang dibuat.', code: 'git config --global user.name "Nama Kamu"\ngit config --global user.email "email@kamu.com"', tip: 'Gunakan email yang sama dengan akun GitHub agar kotak hijau kontribusi muncul.' },
+      { cmd: 'git status', level: 'Pemula', safety: 'Aman', analogy: 'Radar Pengecek Keadaan', desc: 'Menampilkan branch aktif, file yang dimodifikasi, file di Staging Area, dan file yang belum dilacak Git.', code: 'git status\ngit status -s', tip: 'Jadikan refleks jari sebelum menjalankan perintah Git apa pun.' },
+      { cmd: 'git add .', level: 'Pemula', safety: 'Aman', analogy: 'Masukin ke Keranjang Belanja', desc: 'Memindahkan perubahan file dari Working Directory ke Staging Area agar siap difoto saat commit.', code: 'git add index.html\ngit add .', tip: 'Periksa dulu dengan git status agar file eksperimen tidak ikut masuk.' },
+      { cmd: 'git commit -m', level: 'Pemula', safety: 'Aman', analogy: 'Tekan Tombol Save Point', desc: 'Menyimpan snapshot permanen dari isi Staging Area ke dalam riwayat Local Repository.', code: 'git commit -m "feat: tambah validasi login"', tip: 'Gunakan awalan jelas seperti feat:, fix:, docs:, atau refactor:.' },
+      { cmd: 'git push -u origin main', level: 'Pemula', safety: 'Aman', analogy: 'Upload Save Point ke Cloud', desc: 'Mengirimkan seluruh commit lokal ke GitHub sekaligus mengikat jalur upstream untuk push berikutnya.', code: 'git push -u origin main', tip: 'Setelah sekali memakai -u, push berikutnya cukup ketik git push.' },
+      { cmd: 'git pull origin main', level: 'Pemula', safety: 'Aman', analogy: 'Sedot Update Terbaru Tim', desc: 'Mengambil commit terbaru dari server remote dan langsung menggabungkannya ke branch lokal.', code: 'git pull origin main', tip: 'Biasakan git pull setiap pagi sebelum mulai ngoding.' },
+      { cmd: 'git restore', level: 'Pemula', safety: 'Hati-hati', analogy: 'Batalkan Editan File Belum Save', desc: 'Mengembalikan file yang sudah diedit di Working Directory kembali persis seperti commit terakhir.', code: 'git restore app.js', tip: 'Perubahan yang dibuang dengan git restore tidak bisa di-undo karena belum di-commit.' },
+      { cmd: 'git restore --staged', level: 'Pemula', safety: 'Aman', analogy: 'Keluarkan dari Keranjang Belanja', desc: 'Membatalkan status git add (unstage) tanpa menghapus isi kodingan di dalam file.', code: 'git restore --staged rahasia.js', tip: '100% aman! Isi filemu tetap utuh di folder kerja.' },
+
+      // MENENGAH (10)
+      { cmd: 'git switch -c', level: 'Menengah', safety: 'Aman', analogy: 'Bikin Alam Semesta Paralel Baru', desc: 'Membuat branch baru dari posisi saat ini sekaligus langsung berpindah masuk ke dalamnya.', code: 'git switch -c feat/keranjang', tip: 'Pengganti modern yang lebih aman daripada git checkout -b.' },
+      { cmd: 'git switch -', level: 'Menengah', safety: 'Aman', analogy: 'Teleportasi Bolak-Balik Cepat', desc: 'Berpindah kembali ke branch sebelumnya dengan satu tanda strip.', code: 'git switch -', tip: 'Sangat cepat saat sering bolak-balik antara main dan branch fitur.' },
+      { cmd: 'git branch -d / -D', level: 'Menengah', safety: 'Hati-hati', analogy: 'Hapus Cabang Lama', desc: 'Menghapus branch lokal. Flag -d aman (menolak jika belum di-merge); flag -D memaksa hapus.', code: 'git branch -d feat/login', tip: 'Selalu utamakan -d agar tidak tidak sengaja menghapus kerjaan yang belum digabung.' },
+      { cmd: 'git merge', level: 'Menengah', safety: 'Aman', analogy: 'Satukan Dua Jalur Sungai', desc: 'Menggabungkan riwayat commit dari branch lain masuk ke dalam branch yang sedang aktif.', code: 'git switch main\ngit merge feat/login', tip: 'Pastikan selalu berada di branch penerima (tujuan) sebelum mengetik git merge.' },
+      { cmd: 'git commit --amend', level: 'Menengah', safety: 'Hati-hati', analogy: 'Revisi Save Point Terakhir', desc: 'Mengubah pesan commit terakhir atau menyisipkan file yang kelupaan ke dalam commit terakhir.', code: 'git add lupa.js\ngit commit --amend -m "feat: pesan baru"', tip: 'Hindari memakai --amend pada commit yang sudah di-push ke branch bersama.' },
+      { cmd: 'git diff --staged', level: 'Menengah', safety: 'Aman', analogy: 'Kaca Pembesar Isi Keranjang', desc: 'Membandingkan perubahan baris per baris yang sudah masuk Staging Area terhadap commit terakhir.', code: 'git diff --staged', tip: 'Mencegah console.log() atau kode debug lolos masuk ke commit.' },
+      { cmd: 'git log --oneline --graph', level: 'Menengah', safety: 'Aman', analogy: 'Peta Pohon Cabang di Terminal', desc: 'Menampilkan riwayat commit ringkas 1 baris lengkap dengan visualisasi percabangan.', code: 'git log --oneline --graph --all', tip: 'Tekan Q untuk keluar dari tampilan pager log.' },
+      { cmd: 'git stash / git stash pop', level: 'Menengah', safety: 'Aman', analogy: 'Simpan Sementara ke Laci Rahasia', desc: 'Menyimpan perubahan yang belum di-commit ke laci sementara agar bisa pindah branch, lalu mengambilnya kembali.', code: 'git stash push -m "wip: navbar"\ngit stash pop', tip: 'Tambahkan flag -u pada git stash -u agar file baru (untracked) ikut tersimpan.' },
+      { cmd: 'git revert', level: 'Menengah', safety: 'Aman', analogy: 'Tombol Undo Sopan untuk Tim', desc: 'Membuat commit BARU yang membalikkan perubahan dari commit lama tanpa menghapus riwayat.', code: 'git revert 99ab12c', tip: 'Cara paling aman dan profesional untuk membatalkan bug yang sudah terlanjur di-push ke main.' },
+      { cmd: 'git reset --soft HEAD~1', level: 'Menengah', safety: 'Aman', analogy: 'Mundur Commit, File Tetap di Keranjang', desc: 'Membatalkan commit terakhir namun mempertahankan seluruh perubahan file di Staging Area.', code: 'git reset --soft HEAD~1', tip: 'Sangat berguna untuk menggabungkan atau memecah commit lokal.' },
+
+      // SEPUH (10)
+      { cmd: 'git rebase -i HEAD~3', level: 'Sepuh', safety: 'Hati-hati', analogy: 'Editor Mesin Waktu (Squash)', desc: 'Interactive Rebase untuk melebur banyak commit berantakan (squash/fixup) atau mengubah pesan commit.', code: 'git rebase -i HEAD~3', tip: 'Jangan pernah melakukan rebase pada branch publik seperti main!' },
+      { cmd: 'git cherry-pick', level: 'Sepuh', safety: 'Aman', analogy: 'Petik Satu Ceri Tanpa Tebang Pohon', desc: 'Menyalin satu commit spesifik dari branch lain dan menerapkannya ke branch aktif saat ini.', code: 'git switch main\ngit cherry-pick 77de34f', tip: 'Sangat efektif untuk mengambil perbaikan hotfix mendadak.' },
+      { cmd: 'git push --force-with-lease', level: 'Sepuh', safety: 'Hati-hati', analogy: 'Force Push yang Punya Rem', desc: 'Memaksa push setelah rebase/amend lokal, namun otomatis batal jika ada rekan tim yang baru saja push ke branch itu.', code: 'git push --force-with-lease origin feat/login', tip: 'Selalu pakai ini sebagai pengganti git push --force.' },
+      { cmd: 'git add -p', level: 'Sepuh', safety: 'Aman', analogy: 'Pilih Potongan Kode Satu per Satu', desc: 'Memilih bagian kode tertentu saja di dalam satu file untuk dimasukkan ke Staging Area.', code: 'git add -p app.js', tip: 'Membuat setiap commit fokus pada satu perubahan logis.' },
+      { cmd: 'git blame', level: 'Sepuh', safety: 'Aman', analogy: 'Detektif Sejarah Tiap Baris', desc: 'Menampilkan penulis, hash commit, dan waktu modifikasi terakhir di samping setiap baris kode.', code: 'git blame -L 10,25 src/auth.js', tip: 'Membantu memahami konteks mengapa baris kode tertentu ditulis.' },
+      { cmd: 'git fetch --prune', level: 'Sepuh', safety: 'Aman', analogy: 'Bersihkan Hantu Branch Remote', desc: 'Mengambil info terbaru dari remote sekaligus menghapus referensi branch lokal yang sudah dihapus di GitHub.', code: 'git fetch --prune', tip: 'Aktifkan otomatis dengan: git config --global fetch.prune true.' },
+      { cmd: 'git tag -a', level: 'Sepuh', safety: 'Aman', analogy: 'Prasasti Versi Rilis Resmi', desc: 'Membuat penanda rilis ber-metadata lengkap (versi, pembuat, catatan rilis) pada commit tertentu.', code: 'git tag -a v1.0.0 -m "Rilis perdana"\ngit push origin v1.0.0', tip: 'Digunakan untuk menandai titik rilis produksi (Semantic Versioning).' },
+      { cmd: 'git remote set-url origin', level: 'Sepuh', safety: 'Aman', analogy: 'Ganti Alamat Server Tanpa Hapus .git', desc: 'Memperbarui URL server remote (misalnya ganti dari HTTPS ke SSH atau ganti nama repo) tanpa menghapus folder .git.', code: 'git remote set-url origin git@github.com:user/repo.git', tip: 'Cek alamat remote sebelum dan sesudah dengan git remote -v.' },
+      { cmd: 'git rm --cached', level: 'Sepuh', safety: 'Aman', analogy: 'Hapus dari Git, Simpan di Laptop', desc: 'Menghentikan pelacakan Git terhadap file yang terlanjur di-commit (seperti .env) tanpa menghapus file fisiknya di laptop.', code: 'git rm --cached .env', tip: 'Segera tambahkan nama file ke .gitignore setelah menjalankan perintah ini.' },
+      { cmd: 'git reset --hard', level: 'Sepuh', safety: 'Berbahaya', analogy: 'Hapus Total & Balik ke Masa Lalu', desc: 'Memundurkan HEAD sekaligus menghapus permanen seluruh perubahan di Staging dan Working Directory.', code: 'git reset --hard HEAD~1', tip: 'Pastikan tidak ada kode belum ter-commit yang masih dibutuhkan.' },
+
+      // DEWA KRISIS (10)
+      { cmd: 'git reflog', level: 'Dewa Krisis', safety: 'Aman', analogy: 'CCTV Kotak Hitam Penyelamat Nyawa', desc: 'Mencatat setiap pergerakan HEAD di lokal sehingga commit yang hilang akibat reset --hard bisa dihidupkan kembali.', code: 'git reflog\ngit reset --hard HEAD@{1}', tip: 'Penyelamat nomor satu saat bencana git reset --hard!' },
+      { cmd: 'git bisect', level: 'Dewa Krisis', safety: 'Aman', analogy: 'Binary Search Pencari Commit Bug', desc: 'Menggunakan algoritma Binary Search untuk melompat di antara ratusan commit guna menemukan penyebab bug dalam hitungan detik.', code: 'git bisect start\ngit bisect bad\ngit bisect good a1b2c3d\ngit bisect reset', tip: 'Bisa dijalankan otomatis dengan unit test: git bisect run npm test.' },
+      { cmd: 'git worktree', level: 'Dewa Krisis', safety: 'Aman', analogy: 'Kloning Bayangan Folder Kerja', desc: 'Membuka beberapa branch sekaligus di folder direktori berbeda yang terhubung ke satu repositori .git yang sama.', code: 'git worktree add ../proyek-hotfix hotfix\ngit worktree remove ../proyek-hotfix', tip: 'Tidak perlu stash atau clone ulang saat harus mengerjakan hotfix mendadak.' },
+      { cmd: 'git clean -nd / -fd', level: 'Dewa Krisis', safety: 'Berbahaya', analogy: 'Sapu Bersih File Sampah Untracked', desc: 'Menghapus file dan folder baru yang belum dilacak Git. Gunakan -nd dulu untuk simulasi (dry-run).', code: 'git clean -nd\ngit clean -fd', tip: 'File untracked yang dihapus git clean tidak masuk reflog, jadi selalu cek -nd dulu!' },
+      { cmd: 'git rebase --onto', level: 'Dewa Krisis', safety: 'Hati-hati', analogy: 'Cangkok Cabang ke Pangkal Baru', desc: 'Memindahkan sekumpulan commit dari satu cabang induk ke cabang induk lain secara bedah presisi.', code: 'git rebase --onto main fitur-lama fitur-baru', tip: 'Sangat ampuh saat kamu tidak sengaja membuat branch fitur di atas branch fitur lain yang batal dipakai.' },
+      { cmd: 'git reset --hard ORIG_HEAD', level: 'Dewa Krisis', safety: 'Hati-hati', analogy: 'Undo Merge / Rebase Besar Seketika', desc: 'Mengembalikan posisi branch ke titik tepat sebelum operasi merge atau rebase terakhir dijalankan.', code: 'git reset --hard ORIG_HEAD', tip: 'Git otomatis menyimpan posisi sebelum operasi berbahaya di pointer ORIG_HEAD.' },
+      { cmd: 'git log -S "kode"', level: 'Dewa Krisis', safety: 'Aman', analogy: 'Mesin Pencari Kode yang Hilang (Pickaxe)', desc: 'Mencari commit mana saja dalam seluruh sejarah proyek yang pernah menambahkan atau menghapus potongan teks/fungsi tertentu.', code: 'git log -S "calculateTax" --oneline', tip: 'Jurus detektif tingkat dewa untuk melacak kapan sebuah fungsi dihapus.' },
+      { cmd: 'git shortlog -sn --no-merges', level: 'Dewa Krisis', safety: 'Aman', analogy: 'Papan Peringkat Kontributor Proyek', desc: 'Menampilkan ringkasan jumlah commit bersih tiap anggota tim tanpa menghitung merge commit.', code: 'git shortlog -sn --no-merges', tip: 'Berguna untuk melihat statistik kontribusi rilis.' },
+      { cmd: 'git fsck --lost-found', level: 'Dewa Krisis', safety: 'Aman', analogy: 'Forensik Objek Dangling Git', desc: 'Memeriksa integritas database .git dan memulihkan objek blob/commit yatim piatu yang terlepas dari semua branch.', code: 'git fsck --lost-found', tip: 'Pertolongan terakhir tingkat forensik jika reflog juga terhapus.' },
+      { cmd: 'git rerere', level: 'Dewa Krisis', safety: 'Aman', analogy: 'Otak Memori Penyelesai Konflik Otomatis', desc: 'Reuse Recorded Resolution: membuat Git mengingat cara kamu menyelesaikan konflik tertentu agar otomatis diterapkan jika konflik sama muncul lagi.', code: 'git config --global rerere.enabled true', tip: 'Wajib diaktifkan oleh tech lead yang sering menangani rebase branch berumur panjang.' }
+    ];
+
+    // =========================================================================
+    // DATA 4: MODAL "TOMBOL PANIK!" (8 SKENARIO DARURAT)
+    // =========================================================================
+    const PANIC_DRAWER_ITEMS = [
+      {
+        id: 'panic-typo-msg',
+        emoji: '✏️',
+        short: 'Salah tulis pesan commit terakhir!',
+        title: '1. Salah tulis pesan commit terakhir (belum di-push)',
+        steps: [
+          {
+            title: 'Langkah 1: Revisi langsung dengan flag --amend',
+            desc: 'Perintah ini mengganti pesan commit terakhir tanpa mengubah isi file yang sudah kamu commit.',
+            code: 'git commit --amend -m "feat: pesan commit yang benar"'
+          }
+        ]
+      },
+      {
+        id: 'panic-forgot-file',
+        emoji: '📎',
+        short: 'Lupa masukkan 1 file ke commit terakhir!',
+        title: '2. Ketinggalan 1 file padahal baru saja menekan git commit!',
+        steps: [
+          {
+            title: 'Langkah 1: Masukkan file yang ketinggalan ke Staging Area',
+            desc: 'Stage file yang lupa kamu masukkan tadi.',
+            code: 'git add file-ketinggalan.js'
+          },
+          {
+            title: 'Langkah 2: Gabungkan ke commit terakhir tanpa ubah pesan (--no-edit)',
+            desc: 'Flag --no-edit langsung menyisipkan file tersebut ke commit terakhirmu.',
+            code: 'git commit --amend --no-edit'
+          }
+        ]
+      },
+      {
+        id: 'panic-wrong-branch',
+        emoji: '😱',
+        short: 'Terlanjur commit di main, harusnya di branch baru!',
+        title: '3. Salah commit di branch main padahal harusnya di branch fitur!',
+        steps: [
+          {
+            title: 'Langkah 1: Salin posisi main saat ini ke branch fitur baru',
+            desc: 'Buat branch fitur baru dulu supaya commit-mu tersimpan aman di sana.',
+            code: 'git branch feat/fitur-baru'
+          },
+          {
+            title: 'Langkah 2: Mundurkan branch main ke kondisi bersih sebelum salah commit',
+            desc: 'Kembalikan main mundur 1 commit (ganti angka 1 jika salah commit beberapa kali).',
+            code: 'git reset --hard HEAD~1'
+          },
+          {
+            title: 'Langkah 3: Pindah masuk ke branch fitur barumu',
+            desc: 'Sekarang main sudah bersih kembali dan pekerjaanmu aman di branch fitur.',
+            code: 'git switch feat/fitur-baru'
+          }
+        ]
+      },
+      {
+        id: 'panic-reset-hard',
+        emoji: '💀',
+        short: 'Commit hilang setelah git reset --hard!',
+        title: '4. Waduh! Commit hilang setelah menjalankan git reset --hard!',
+        steps: [
+          {
+            title: 'Langkah 1: Buka CCTV Rahasia Git (git reflog)',
+            desc: 'Jangan panik! Ketik git reflog untuk melihat daftar seluruh pergerakan HEAD sebelumnya.',
+            code: 'git reflog'
+          },
+          {
+            title: 'Langkah 2: Hidupkan kembali commit sebelum reset --hard',
+            desc: 'Ambil hash atau indeks HEAD@{1} tepat sebelum tulisan "reset: moving to..." dan kembalikan posisimu.',
+            code: 'git reset --hard HEAD@{1}'
+          }
+        ]
+      },
+      {
+        id: 'panic-vim',
+        emoji: '🔒',
+        short: 'Terjebak di layar editor Vim (:wq)!',
+        title: '5. Terjebak di layar editor terminal Vim tidak bisa keluar!',
+        steps: [
+          {
+            title: 'Langkah 1: Tekan ESC 2x lalu ketik :wq + Enter',
+            desc: 'Esc keluar dari mode ketik, lalu :wq artinya Write (simpan) & Quit (keluar).',
+            code: ':wq'
+          },
+          {
+            title: 'Langkah 2: (Bonus Sepuh) Ubah editor default Git ke VS Code',
+            desc: 'Agar ke depannya Git membuka VS Code, bukan Vim:',
+            code: 'git config --global core.editor "code --wait"'
+          }
+        ]
+      },
+      {
+        id: 'panic-env',
+        emoji: '🔥',
+        short: 'Tidak sengaja commit file rahasia .env!',
+        title: '6. Tidak sengaja commit file rahasia .env / API Key!',
+        steps: [
+          {
+            title: 'Langkah 1: Keluarkan .env dari pelacakan Git tanpa menghapus file di laptop',
+            desc: 'Flag --cached menghapus .env dari catatan Git tapi tetap menyisakan file aslinya di komputermu.',
+            code: 'git rm --cached .env'
+          },
+          {
+            title: 'Langkah 2: Daftarkan .env ke .gitignore & revisi commit terakhir',
+            desc: 'Jika sudah terlanjur di-push ke repo publik, segera ganti/revoke API key tersebut!',
+            code: 'echo ".env" >> .gitignore\ngit add .gitignore\ngit commit --amend -m "chore: hapus .env dari git"'
+          }
+        ]
+      },
+      {
+        id: 'panic-pushed-bug',
+        emoji: '⏪',
+        short: 'Terlanjur push commit berisi bug ke GitHub!',
+        title: '7. Sudah terlanjur git push commit yang bikin aplikasi error ke GitHub!',
+        steps: [
+          {
+            title: 'Langkah 1: Cek hash commit yang bermasalah',
+            desc: 'Lihat 5 commit terakhir untuk menyalin kode hash commit penyebab bug.',
+            code: 'git log --oneline -n 5'
+          },
+          {
+            title: 'Langkah 2: Batalkan efek commit tersebut secara sopan dengan git revert',
+            desc: 'Jangan pakai reset --hard + force push di branch tim! git revert membuat commit baru yang membalikkan perubahan bug dengan aman.',
+            code: 'git revert <kode-hash-commit>\ngit push origin main'
+          }
+        ]
+      },
+      {
+        id: 'panic-forgot-pull',
+        emoji: '🔄',
+        short: 'Lupa git pull sebelum ngoding & bentrok!',
+        title: '8. Sudah asyik ngoding lama, ternyata lupa git pull update teman!',
+        steps: [
+          {
+            title: 'Langkah 1: Amankan sementara editan lokalmu ke laci git stash',
+            desc: 'Menyimpan perubahanmu agar Working Directory bersih seketika.',
+            code: 'git stash push -m "wip: kerjaan lokal"'
+          },
+          {
+            title: 'Langkah 2: Tarik update terbaru dari GitHub lalu keluarkan lagi editanmu',
+            desc: 'git pull mengambil kode teman, dan git stash pop mengembalikan editanmu di atasnya.',
+            code: 'git pull origin main\ngit stash pop'
+          }
+        ]
+      }
+    ];
+
+    // =========================================================================
+    // UTILITIES: TOAST & CLIPBOARD COPY (NO browser alert() USED)
+    // =========================================================================
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const isSuccess = type === 'success';
+      toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-2xl border backdrop-blur-md shadow-2xl text-xs sm:text-sm font-medium animate-fade-up ${
+        isSuccess
+          ? 'bg-emerald-950/95 border-emerald-500/50 text-emerald-200'
+          : 'bg-cyan-950/95 border-cyan-500/50 text-cyan-200'
+      }`;
+      toast.innerHTML = `
+        <i data-lucide="${isSuccess ? 'check-circle-2' : 'info'}" class="w-4 h-4 shrink-0 ${isSuccess ? 'text-emerald-400' : 'text-cyan-400'}"></i>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-6px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => toast.remove(), 250);
+      }, 2600);
+    }
+
+    function copyTextToClipboard(buttonEl, encodedText) {
+      const text = decodeURIComponent(encodedText);
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+
+      try {
+        document.execCommand('copy');
+        if (buttonEl) {
+          const orig = buttonEl.innerHTML;
+          buttonEl.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i> <span class="text-emerald-400">Tersalin!</span>`;
+          lucide.createIcons();
+          setTimeout(() => {
+            buttonEl.innerHTML = orig;
+            lucide.createIcons();
+          }, 1600);
+        }
+        showToast('Perintah disalin ke clipboard!');
+      } catch (e) {
+        showToast('Silakan salin perintah secara manual.', 'info');
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    }
+
+    // =========================================================================
+    // SECTION 1 & 2: HERO GRAPH & MOBILE NAVBAR
+    // =========================================================================
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        document.getElementById('mobile-menu').classList.add('hidden');
+      });
+    });
+
+    document.querySelectorAll('.hero-node').forEach(node => {
+      node.addEventListener('click', () => {
+        const title = node.getAttribute('data-title');
+        const hash = node.getAttribute('data-hash');
+        const branch = node.getAttribute('data-branch');
+        const head = node.getAttribute('data-head');
+        const desc = node.getAttribute('data-desc');
+
+        document.getElementById('hero-info-title').textContent = title;
+        document.getElementById('hero-info-hash').textContent = `${branch} • ${hash}`;
+        document.getElementById('hero-info-head').textContent = head;
+        document.getElementById('hero-info-desc').textContent = desc;
+        showToast(`Inspeksi node ${hash} (${branch})`, 'info');
+      });
+    });
+
+    // =========================================================================
+    // SECTION 3: SIMULATOR ERROR GIT INTERAKTIF (13 SKENARIO)
+    // =========================================================================
+    let activeErrorCategory = 'all';
+    let activeErrorId = GIT_ERRORS[0].id;
+    let errorCompletedSteps = 0;
+    let extraTerminalLogs = [];
+    let showHumanPanel = true;
+    let conflictResolvedState = false;
+    let conflictChoiceType = null;
+
+    function renderErrorScenarioList() {
+      const listEl = document.getElementById('error-scenario-list');
+      const filtered = GIT_ERRORS.filter(err => activeErrorCategory === 'all' || err.category === activeErrorCategory);
+
+      listEl.innerHTML = filtered.map((err, idx) => {
+        const isActive = err.id === activeErrorId;
+        const catColor = {
+          'Push & Pull': 'text-rose-300 bg-rose-500/15 border-rose-500/30',
+          'Merge & Conflict': 'text-amber-300 bg-amber-500/15 border-amber-500/30',
+          'Commit & Lock': 'text-cyan-300 bg-cyan-500/15 border-cyan-500/30',
+          'Branch & Stash': 'text-purple-300 bg-purple-500/15 border-purple-500/30'
+        }[err.category] || 'text-slate-300 bg-slate-800 border-slate-700';
+
+        return `
+          <button
+            onclick="selectErrorScenario('${err.id}')"
+            class="w-full text-left p-3.5 rounded-2xl border transition cursor-pointer ${
+              isActive
+                ? 'bg-rose-500/15 border-rose-500/60 shadow-lg shadow-rose-500/10'
+                : 'bg-[#111827] border-[#1e293b] hover:border-slate-700 hover:bg-slate-900/90'
+            }"
+          >
+            <div class="flex items-center justify-between gap-2 mb-1.5">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded border ${catColor}">${err.category}</span>
+              <span class="text-[10px] font-mono text-slate-500">#${idx + 1}</span>
+            </div>
+            <div class="font-mono text-xs font-bold ${isActive ? 'text-white' : 'text-slate-200'} leading-snug">
+              ${err.shortTitle}
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectErrorScenario(id) {
+      activeErrorId = id;
+      errorCompletedSteps = 0;
+      extraTerminalLogs = [];
+      conflictResolvedState = false;
+      conflictChoiceType = null;
+      renderErrorScenarioList();
+      renderActiveErrorWorkspace();
+    }
+
+    function resetActiveErrorLab() {
+      errorCompletedSteps = 0;
+      extraTerminalLogs = [];
+      conflictResolvedState = false;
+      conflictChoiceType = null;
+      renderActiveErrorWorkspace();
+      showToast('Terminal di-reset ke kondisi error awal.', 'info');
+    }
+
+    function solveAllErrorSteps() {
+      const errObj = GIT_ERRORS.find(e => e.id === activeErrorId);
+      if (!errObj) return;
+
+      if (errObj.hasMiniEditor && !conflictResolvedState) {
+        conflictResolvedState = true;
+        conflictChoiceType = 'current';
+      }
+
+      while (errorCompletedSteps < errObj.fixSteps.length) {
+        const stepObj = errObj.fixSteps[errorCompletedSteps];
+        extraTerminalLogs.push({ type: 'cmd', text: stepObj.cmd });
+        stepObj.output.forEach(line => extraTerminalLogs.push(line));
+        errorCompletedSteps++;
+      }
+
+      renderActiveErrorWorkspace();
+      showToast('🎉 Solusi aman dijalankan! Error teratasi sepenuhnya.', 'success');
+    }
+
+    function toggleHumanTranslation() {
+      showHumanPanel = !showHumanPanel;
+      const panel = document.getElementById('err-human-panel');
+      const label = document.getElementById('toggle-human-label');
+      if (showHumanPanel) {
+        panel.classList.remove('hidden');
+        label.textContent = 'Sembunyikan Bedah Error';
+      } else {
+        panel.classList.add('hidden');
+        label.textContent = 'Tampilkan Bedah Penyebab';
+      }
+    }
+
+    function resolveConflictChoice(choice) {
+      conflictResolvedState = true;
+      conflictChoiceType = choice;
+      renderConflictMiniEditor();
+      renderActiveErrorWorkspace();
+      showToast('Konflik app.js selesai dipilih! Lanjutkan Langkah 1: git add.', 'success');
+    }
+
+    function renderConflictMiniEditor() {
+      const codeBox = document.getElementById('conflict-code-preview');
+      const statusBadge = document.getElementById('conflict-editor-status');
+
+      if (!conflictResolvedState) {
+        statusBadge.textContent = 'Ada 1 Konflik Aktif';
+        statusBadge.className = 'text-[11px] font-mono px-2 py-0.5 rounded bg-rose-500/20 text-rose-300';
+        codeBox.innerHTML = `<span class="text-slate-500">// file: app.js</span>
+function hitungTotal(qty) {
+<span class="text-cyan-400 font-bold">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD (Milikmu di main)</span>
+<span class="bg-cyan-500/15 text-cyan-200">  const hargaSatuan = 50000;</span>
+<span class="text-amber-400 font-bold">=======</span>
+<span class="bg-purple-500/15 text-purple-200">  const hargaSatuan = 75000;</span>
+<span class="text-purple-400 font-bold">&gt;&gt;&gt;&gt;&gt;&gt;&gt; fitur-diskon (Dari branch lain)</span>
+  return qty * hargaSatuan;
+}`;
+      } else {
+        statusBadge.textContent = 'Konflik Bersih ✔';
+        statusBadge.className = 'text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300';
+        let chosenLine = '  const hargaSatuan = 50000; // Menggunakan Current (HEAD)';
+        if (conflictChoiceType === 'incoming') {
+          chosenLine = '  const hargaSatuan = 75000; // Menggunakan Incoming (fitur-diskon)';
+        } else if (conflictChoiceType === 'both') {
+          chosenLine = '  const hargaDasar = 50000;\n  const hargaPromo = 75000; // Menggabungkan keduanya';
+        }
+        codeBox.innerHTML = `<span class="text-slate-500">// file: app.js (Tanda konflik &lt;&lt;&lt; === &gt;&gt;&gt; sudah bersih!)</span>
+function hitungTotal(qty) {
+<span class="bg-emerald-500/15 text-emerald-300">${chosenLine}</span>
+  return qty * (typeof hargaPromo !== 'undefined' ? hargaPromo : hargaSatuan);
+}`;
+      }
+    }
+
+    function executeErrorFixStep(stepIdx) {
+      const errObj = GIT_ERRORS.find(e => e.id === activeErrorId);
+      if (!errObj) return;
+
+      if (stepIdx !== errorCompletedSteps) {
+        showToast(`Jalankan Langkah ${errorCompletedSteps + 1} terlebih dahulu secara berurutan!`, 'info');
+        return;
+      }
+
+      const stepObj = errObj.fixSteps[stepIdx];
+      if (stepObj.requiresConflictResolved && !conflictResolvedState) {
+        showToast('Pilih salah satu penyelesaian konflik di Mini Editor VS Code di atas dulu!', 'info');
+        return;
+      }
+
+      extraTerminalLogs.push({ type: 'cmd', text: stepObj.cmd });
+      stepObj.output.forEach(line => extraTerminalLogs.push(line));
+      errorCompletedSteps++;
+
+      renderActiveErrorWorkspace();
+
+      if (errorCompletedSteps >= errObj.fixSteps.length) {
+        showToast('🎉 Mantap! Error berhasil diatasi sepenuhnya!', 'success');
+      }
+    }
+
+    function renderActiveErrorWorkspace() {
+      const errObj = GIT_ERRORS.find(e => e.id === activeErrorId) || GIT_ERRORS[0];
+      const isSolved = errorCompletedSteps >= errObj.fixSteps.length;
+
+      document.getElementById('err-active-cat').textContent = errObj.category;
+      document.getElementById('err-active-title').textContent = errObj.fullTitle;
+
+      const statusBadge = document.getElementById('err-status-badge');
+      const diagramPhase = document.getElementById('err-diagram-phase');
+      if (isSolved) {
+        statusBadge.textContent = '✅ BERHASIL TERATASI';
+        statusBadge.className = 'text-xs font-mono font-extrabold px-3 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+        diagramPhase.textContent = 'Sesudah Diperbaiki (Sehat)';
+        diagramPhase.className = 'text-emerald-400';
+        document.getElementById('err-visual-diagram').innerHTML = errObj.diagramAfter;
+      } else {
+        statusBadge.textContent = '❌ ERROR AKTIF';
+        statusBadge.className = 'text-xs font-mono font-extrabold px-3 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40';
+        diagramPhase.textContent = 'Sebelum Diperbaiki';
+        diagramPhase.className = 'text-rose-400';
+        document.getElementById('err-visual-diagram').innerHTML = errObj.diagramBefore;
+      }
+
+      // Render Terminal Lines
+      const allLines = [...errObj.terminalLines, ...extraTerminalLogs];
+      const termEl = document.getElementById('err-terminal-output');
+      termEl.innerHTML = allLines.map(line => {
+        if (line.type === 'cmd') return `<div class="text-cyan-300 font-bold pt-1">${line.text}</div>`;
+        if (line.type === 'error') return `<div class="text-rose-400 font-semibold">${line.text}</div>`;
+        if (line.type === 'hint') return `<div class="text-amber-300">${line.text}</div>`;
+        if (line.type === 'success') return `<div class="text-emerald-400 font-semibold">${line.text}</div>`;
+        return `<div class="text-slate-300">${line.text}</div>`;
+      }).join('');
+
+      // Human Translation Panel
+      document.getElementById('err-summary-indo').textContent = errObj.summaryIndo;
+      document.getElementById('err-line-breakdown').innerHTML = errObj.lineBreakdown.map(item => `
+        <div class="p-2.5 rounded-xl bg-[#090d16]/90 border border-amber-500/20 text-xs space-y-1">
+          <div class="font-mono text-rose-300 break-all">"${item.raw}"</div>
+          <div class="text-slate-300">👉 <strong class="text-amber-300">Artinya:</strong> ${item.meaning}</div>
+        </div>
+      `).join('');
+
+      // Mini Conflict Editor Toggle
+      const miniEditor = document.getElementById('conflict-mini-editor');
+      if (errObj.hasMiniEditor) {
+        miniEditor.classList.remove('hidden');
+        renderConflictMiniEditor();
+      } else {
+        miniEditor.classList.add('hidden');
+      }
+
+      // Step-by-Step Fix Buttons
+      document.getElementById('err-step-progress').textContent = `${errorCompletedSteps} / ${errObj.fixSteps.length} langkah`;
+      document.getElementById('err-fix-buttons').innerHTML = errObj.fixSteps.map((st, idx) => {
+        const isDone = idx < errorCompletedSteps;
+        const isNext = idx === errorCompletedSteps;
+        let btnClass = 'bg-[#111827] text-slate-500 border-[#1e293b] cursor-not-allowed';
+        if (isDone) {
+          btnClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 cursor-default';
+        } else if (isNext) {
+          btnClass = 'bg-emerald-500 hover:bg-emerald-400 text-[#090d16] border-emerald-400 font-extrabold shadow-lg shadow-emerald-500/20 cursor-pointer';
+        }
+        return `
+          <button
+            onclick="executeErrorFixStep(${idx})"
+            class="px-4 py-2.5 rounded-xl border font-mono text-xs sm:text-sm transition flex items-center gap-2 ${btnClass}"
+          >
+            <span>${isDone ? '✅' : isNext ? '▶' : '🔒'}</span>
+            <span>${st.label}</span>
+          </button>
+        `;
+      }).join('');
+
+      document.getElementById('err-solution-how').textContent = errObj.solutionHow;
+      document.getElementById('err-beginner-trap').textContent = errObj.beginnerTrap;
+
+      lucide.createIcons();
+    }
+
+    document.querySelectorAll('.err-cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.err-cat-btn').forEach(b => {
+          b.className = 'err-cat-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-[#111827] text-slate-300 border border-[#1e293b] hover:border-rose-500/40 transition cursor-pointer';
+        });
+        btn.className = 'err-cat-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-rose-500 text-white transition cursor-pointer';
+        activeErrorCategory = btn.getAttribute('data-errcat');
+
+        const firstMatch = GIT_ERRORS.find(e => activeErrorCategory === 'all' || e.category === activeErrorCategory);
+        if (firstMatch) {
+          selectErrorScenario(firstMatch.id);
+        } else {
+          renderErrorScenarioList();
+        }
+      });
+    });
+
+    // =========================================================================
+    // SECTION 4: ENSIKLOPEDIA FLAGS (- & --) + DUEL FORCE VS FORCE-WITH-LEASE
+    // =========================================================================
+    let activeFlagRisk = 'all';
+    let flagSearchQuery = '';
+
+    function runForceDuel(mode) {
+      const term = document.getElementById('force-duel-terminal');
+      const badge = document.getElementById('force-duel-badge');
+      const diag = document.getElementById('force-duel-diagram');
+
+      const initialSvg = `
+        <svg viewBox="0 0 460 110" class="w-full min-w-[360px] h-24">
+          <text x="12" y="22" fill="#c084fc" font-family="JetBrains Mono" font-size="10" font-weight="700">☁️ Remote GitHub (feat-login):</text>
+          <circle cx="40" cy="44" r="10" fill="#10b981"/><text x="40" y="48" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="9" font-weight="800">C1</text>
+          <line x1="50" y1="44" x2="100" y2="44" stroke="#10b981" stroke-width="2.5"/>
+          <circle cx="110" cy="44" r="10" fill="#10b981"/><text x="110" y="48" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="9" font-weight="800">C2</text>
+          <line x1="120" y1="44" x2="170" y2="44" stroke="#a855f7" stroke-width="2.5"/>
+          <circle cx="180" cy="44" r="11" fill="#a855f7"/><text x="180" y="48" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="9" font-weight="800">C3</text>
+          <text x="200" y="48" fill="#d8b4fe" font-family="JetBrains Mono" font-size="10">← Commit baru rekan tim!</text>
+
+          <text x="12" y="76" fill="#67e8f9" font-family="JetBrains Mono" font-size="10" font-weight="700">💻 Lokal Laptopmu (hasil --amend):</text>
+          <circle cx="40" cy="94" r="10" fill="#10b981"/><text x="40" y="98" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="9" font-weight="800">C1</text>
+          <line x1="50" y1="94" x2="100" y2="94" stroke="#06b6d4" stroke-width="2.5"/>
+          <circle cx="110" cy="94" r="10" fill="#06b6d4"/><text x="110" y="98" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="9" font-weight="800">C2'</text>
+          <text x="130" y="98" fill="#67e8f9" font-family="JetBrains Mono" font-size="10">(Belum tahu ada C3 di GitHub)</text>
+        </svg>
+      `;
+
+      if (mode === 'reset') {
+        diag.innerHTML = initialSvg;
+        badge.textContent = 'Siap Simulasi';
+        badge.className = 'px-2 py-0.5 rounded bg-slate-800 text-slate-300';
+        term.innerHTML = `$ # Posisi Remote GitHub : C1 -> C2 -> C3 (Commit baru rekan tim!)
+$ # Posisi Laptop Kamu   : C1 -> C2' (Hasil git commit --amend)
+$ # Klik "💥 Simulasi --force" atau "🛡️ Simulasi --force-with-lease" di atas!`;
+        return;
+      }
+
+      if (mode === 'force') {
+        badge.textContent = '💥 COMMIT TIM HILANG!';
+        badge.className = 'px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-bold';
+        diag.innerHTML = `
+          <svg viewBox="0 0 460 110" class="w-full min-w-[360px] h-24">
+            <text x="12" y="24" fill="#f43f5e" font-family="JetBrains Mono" font-size="10" font-weight="800">💥 Remote GitHub Setelah git push --force:</text>
+            <circle cx="45" cy="58" r="11" fill="#10b981"/><text x="45" y="62" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="9" font-weight="800">C1</text>
+            <line x1="56" y1="58" x2="115" y2="58" stroke="#06b6d4" stroke-width="3"/>
+            <circle cx="126" cy="58" r="11" fill="#06b6d4"/><text x="126" y="62" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="9" font-weight="800">C2'</text>
+            <circle cx="215" cy="58" r="11" fill="none" stroke="#f43f5e" stroke-width="2" stroke-dasharray="3 3"/><text x="215" y="62" text-anchor="middle" fill="#f43f5e" font-family="JetBrains Mono" font-size="9" font-weight="800">C3?</text>
+            <text x="236" y="62" fill="#fda4af" font-family="JetBrains Mono" font-size="10" font-weight="700">✖ C3 MILIK TEMAN LENYAP!</text>
+            <text x="12" y="94" fill="#fca5a5" font-family="JetBrains Mono" font-size="10">Kerjaan rekan tim tertimpa buta tanpa peringatan apa pun!</text>
+          </svg>
+        `;
+        term.innerHTML = `<span class="text-cyan-300 font-bold">$ git push --force origin feat-login</span>
+<span class="text-slate-300">To https://github.com/Exicobt/edutest.git</span>
+<span class="text-rose-400 font-bold"> + 89ab12c...c2prime feat-login -> feat-login (forced update)</span>
+<span class="text-rose-300 font-bold">⚠️ PERINGATAN KRITIS: Commit C3 milik rekan tim di GitHub TERHAPUS PAKSA dan tertimpa!</span>`;
+        showToast('💥 Bahaya! --force menimpa commit C3 milik rekan tim!', 'info');
+      } else if (mode === 'lease') {
+        badge.textContent = '🛡️ DILINDUNGI REM AMAN';
+        badge.className = 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold';
+        diag.innerHTML = `
+          <svg viewBox="0 0 460 110" class="w-full min-w-[360px] h-24">
+            <text x="12" y="24" fill="#34d399" font-family="JetBrains Mono" font-size="10" font-weight="800">🛡️ Remote GitHub Tetap Utuh (Push Ditolak Secara Aman):</text>
+            <circle cx="45" cy="58" r="11" fill="#10b981"/><text x="45" y="62" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="9" font-weight="800">C1</text>
+            <line x1="56" y1="58" x2="115" y2="58" stroke="#10b981" stroke-width="3"/>
+            <circle cx="126" cy="58" r="11" fill="#10b981"/><text x="126" y="62" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="9" font-weight="800">C2</text>
+            <line x1="137" y1="58" x2="196" y2="58" stroke="#a855f7" stroke-width="3"/>
+            <circle cx="207" cy="58" r="12" fill="#a855f7"/><text x="207" y="62" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="9" font-weight="800">C3</text>
+            <text x="228" y="62" fill="#6ee7b7" font-family="JetBrains Mono" font-size="10" font-weight="700">✔ C3 SELAMAT 100%!</text>
+            <text x="12" y="94" fill="#a7f3d0" font-family="JetBrains Mono" font-size="10">Git mendeteksi ada C3 baru &amp; membatalkan penimpaan otomatis.</text>
+          </svg>
+        `;
+        term.innerHTML = `<span class="text-cyan-300 font-bold">$ git push --force-with-lease origin feat-login</span>
+<span class="text-slate-300">To https://github.com/Exicobt/edutest.git</span>
+<span class="text-rose-400 font-bold"> ! [rejected]        feat-login -> feat-login (stale info)</span>
+<span class="text-emerald-400 font-bold">🛡️ SELAMAT! Git menolak menimpa karena terdeteksi ada commit C3 baru di GitHub yang belum kamu fetch!</span>`;
+        showToast('🛡️ Mantap! --force-with-lease menyelamatkan commit rekan tim!', 'success');
+      }
+    }
+
+    function renderFlagsGrid() {
+      const grid = document.getElementById('flags-grid');
+      const q = flagSearchQuery.toLowerCase().trim();
+
+      const filtered = GIT_FLAGS.filter(f => {
+        const matchRisk = activeFlagRisk === 'all' || f.risk === activeFlagRisk;
+        const matchQ = !q ||
+          f.flag.toLowerCase().includes(q) ||
+          f.meaning.toLowerCase().includes(q) ||
+          f.example.toLowerCase().includes(q) ||
+          f.warning.toLowerCase().includes(q);
+        return matchRisk && matchQ;
+      });
+
+      const riskStyle = {
+        safe: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+        warn: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+        danger: 'bg-rose-500/15 text-rose-300 border-rose-500/30'
+      };
+
+      grid.innerHTML = filtered.map(f => {
+        const encoded = encodeURIComponent(f.example);
+        return `
+          <div class="card-lift rounded-3xl glass-card p-5 flex flex-col justify-between space-y-4">
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between gap-2">
+                <code class="px-3 py-1 rounded-xl bg-purple-500/15 text-purple-300 border border-purple-500/30 font-mono font-extrabold text-xs sm:text-sm">${f.flag}</code>
+                <span class="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full border ${riskStyle[f.risk]}">${f.riskLabel}</span>
+              </div>
+              <div class="text-[11px] font-mono text-slate-400">${f.type}</div>
+              <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">${f.meaning}</p>
+            </div>
+
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-[#05080f] border border-[#1e293b]">
+                <code class="text-xs font-mono text-cyan-300 overflow-x-auto">${f.example}</code>
+                <button
+                  onclick="copyTextToClipboard(this, '${encoded}')"
+                  class="shrink-0 flex items-center gap-1 text-[11px] font-mono px-2 py-1 rounded-lg bg-[#111827] hover:bg-slate-800 text-slate-300 border border-[#1e293b] cursor-pointer"
+                >
+                  <i data-lucide="copy" class="w-3 h-3"></i> Copy
+                </button>
+              </div>
+              <div class="text-xs text-slate-400 leading-relaxed bg-[#090d16]/70 p-2.5 rounded-xl border border-[#1e293b]">
+                💡 ${f.warning}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    document.querySelectorAll('.flag-risk-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.flag-risk-btn').forEach(b => {
+          b.className = 'flag-risk-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-[#1e293b] hover:border-amber-500/40 transition cursor-pointer';
+        });
+        btn.className = 'flag-risk-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500 text-[#090d16] transition cursor-pointer';
+        activeFlagRisk = btn.getAttribute('data-risk');
+        renderFlagsGrid();
+      });
+    });
+
+    document.getElementById('flag-search-input').addEventListener('input', e => {
+      flagSearchQuery = e.target.value;
+      renderFlagsGrid();
+    });
+
+    // =========================================================================
+    // SECTION 5: SIMULATOR VISUAL 4 ZONA ALUR KERJA GIT
+    // =========================================================================
+    const zoneSimState = {
+      working: [{ name: 'app.js', badge: 'Modified', color: 'amber' }],
+      staging: [],
+      local: [{ name: 'index.html', badge: 'v1 (c82a1)', color: 'emerald' }],
+      remote: [{ name: 'index.html', badge: 'origin/main', color: 'purple' }],
+      commitNum: 1
+    };
+
+    function renderZones() {
+      const renderFiles = (arr, emptyMsg) => {
+        if (!arr.length) return `<div class="text-[11px] font-mono text-slate-600 italic py-3 text-center">${emptyMsg}</div>`;
+        const colors = {
+          amber: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+          cyan: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+          emerald: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+          purple: 'bg-purple-500/20 text-purple-300 border-purple-500/30'
+        };
+        return arr.map(f => `
+          <div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[#090d16] border border-[#1e293b] text-xs font-mono animate-fade-up">
+            <span class="text-slate-200 flex items-center gap-1.5"><i data-lucide="file-code-2" class="w-3.5 h-3.5 text-slate-400"></i> ${f.name}</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded border ${colors[f.color] || colors.emerald}">${f.badge}</span>
+          </div>
+        `).join('');
+      };
+
+      document.getElementById('files-working').innerHTML = renderFiles(zoneSimState.working, 'Bersih (Clean)');
+      document.getElementById('files-staging').innerHTML = renderFiles(zoneSimState.staging, 'Keranjang kosong');
+      document.getElementById('files-local').innerHTML = renderFiles(zoneSimState.local, 'Belum ada commit');
+      document.getElementById('files-remote').innerHTML = renderFiles(zoneSimState.remote, 'Belum sinkron');
+      lucide.createIcons();
+    }
+
+    function flyPacket(fromId, toId, label) {
+      const fromEl = document.getElementById(fromId);
+      const toEl = document.getElementById(toId);
+      const packet = document.getElementById('flying-packet');
+      if (!fromEl || !toEl || !packet) return;
+
+      const r1 = fromEl.getBoundingClientRect();
+      const r2 = toEl.getBoundingClientRect();
+
+      document.getElementById('flying-packet-label').textContent = label;
+      packet.style.transition = 'none';
+      packet.style.left = `${r1.left + r1.width / 2 - 42}px`;
+      packet.style.top = `${r1.top + r1.height / 2 - 15}px`;
+      packet.classList.remove('hidden');
+      toEl.classList.add('ring-2', 'ring-emerald-400');
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          packet.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+          packet.style.left = `${r2.left + r2.width / 2 - 42}px`;
+          packet.style.top = `${r2.top + r2.height / 2 - 15}px`;
+        });
+      });
+
+      setTimeout(() => {
+        packet.classList.add('hidden');
+        toEl.classList.remove('ring-2', 'ring-emerald-400');
+      }, 680);
+    }
+
+    function simZoneAction(action) {
+      const exp = document.getElementById('sim-explanation');
+      const term = document.getElementById('sim-terminal');
+
+      if (action === 'edit') {
+        const pool = ['app.js', 'style.css', 'auth.js'];
+        const pick = pool[zoneSimState.working.length % pool.length];
+        if (!zoneSimState.working.some(x => x.name === pick)) {
+          zoneSimState.working.push({ name: pick, badge: 'Modified', color: 'amber' });
+        }
+        exp.innerHTML = `Kamu mengedit <code class="text-amber-300 font-mono">${pick}</code> di <strong>Working Directory</strong>. File berstatus <em>Modified</em> dan siap dimasukkan ke Staging Area.`;
+        term.textContent = `$ code ${pick}\n$ git status -s\n M ${pick}`;
+        renderZones();
+      } else if (action === 'add') {
+        if (!zoneSimState.working.length) {
+          showToast('Working Directory bersih! Klik "1. Edit File" dulu.', 'info');
+          return;
+        }
+        flyPacket('zone-working', 'zone-staging', 'git add .');
+        zoneSimState.working.forEach(f => {
+          if (!zoneSimState.staging.some(s => s.name === f.name)) {
+            zoneSimState.staging.push({ name: f.name, badge: 'Staged ✓', color: 'cyan' });
+          }
+        });
+        zoneSimState.working = [];
+        exp.innerHTML = `<code class="text-cyan-300 font-mono">git add .</code> memindahkan file ke <strong>Staging Area</strong>. Sekarang file siap dipotret menjadi Save Point baru.`;
+        term.textContent = `$ git add .\n$ git status -s\nM  app.js`;
+        setTimeout(renderZones, 280);
+      } else if (action === 'commit') {
+        if (!zoneSimState.staging.length) {
+          showToast('Staging Area masih kosong! Jalankan "2. git add ." dulu.', 'info');
+          return;
+        }
+        flyPacket('zone-staging', 'zone-local', 'Save Point!');
+        zoneSimState.commitNum++;
+        const h = Math.random().toString(16).substring(2, 7);
+        zoneSimState.staging.forEach(f => {
+          const found = zoneSimState.local.find(l => l.name === f.name);
+          if (found) found.badge = `v${zoneSimState.commitNum} (${h})`;
+          else zoneSimState.local.push({ name: f.name, badge: `v${zoneSimState.commitNum} (${h})`, color: 'emerald' });
+        });
+        zoneSimState.staging = [];
+        exp.innerHTML = `<code class="text-emerald-300 font-mono">git commit -m</code> menyimpan snapshot permanen dengan hash <code class="text-emerald-400 font-mono">${h}</code> ke dalam <strong>Local Repository (.git)</strong>!`;
+        term.textContent = `$ git commit -m "feat: simpan perubahan"\n[main ${h}] feat: simpan perubahan`;
+        setTimeout(renderZones, 280);
+      } else if (action === 'push') {
+        flyPacket('zone-local', 'zone-remote', 'git push ↑');
+        zoneSimState.remote = zoneSimState.local.map(f => ({
+          name: f.name,
+          badge: `synced (${f.badge.split(' ')[0]})`,
+          color: 'purple'
+        }));
+        exp.innerHTML = `<code class="text-purple-300 font-mono">git push -u origin main</code> mengunggah seluruh commit dari <strong>Local Repository</strong> ke cloud <strong>Remote Repository (GitHub)</strong>.`;
+        term.textContent = `$ git push -u origin main\nTo github.com:tim/proyek.git\n   c82a1..9a1b2  main -> main`;
+        setTimeout(renderZones, 280);
+      } else if (action === 'pull') {
+        flyPacket('zone-remote', 'zone-working', 'git pull ↓');
+        if (!zoneSimState.local.some(f => f.name === 'update-tim.js')) {
+          zoneSimState.local.push({ name: 'update-tim.js', badge: 'pulled ✓', color: 'emerald' });
+        }
+        if (!zoneSimState.remote.some(f => f.name === 'update-tim.js')) {
+          zoneSimState.remote.push({ name: 'update-tim.js', badge: 'origin/main', color: 'purple' });
+        }
+        exp.innerHTML = `<code class="text-teal-300 font-mono">git pull</code> mengunduh commit terbaru dari <strong>Remote (GitHub)</strong> langsung ke <strong>Local Repo</strong> dan <strong>Working Directory</strong>.`;
+        term.textContent = `$ git pull origin main\nUpdating c82a1..4f8c1\nFast-forward\n update-tim.js | 14 ++++++++++++++`;
+        setTimeout(renderZones, 280);
+      } else if (action === 'reset') {
+        if (zoneSimState.local.length <= 1) {
+          showToast('Minimal ada 2 commit di Local Repo untuk menjalankan git reset --soft!', 'info');
+          return;
+        }
+        flyPacket('zone-local', 'zone-staging', 'git reset');
+        const last = zoneSimState.local.pop();
+        zoneSimState.staging.push({ name: last.name, badge: 'Uncommitted', color: 'cyan' });
+        exp.innerHTML = `<code class="text-rose-300 font-mono">git reset --soft HEAD~1</code> membatalkan commit terakhir di <strong>Local Repo</strong> dan mengembalikan file-nya ke <strong>Staging Area</strong> dengan selamat.`;
+        term.textContent = `$ git reset --soft HEAD~1\n# Commit terakhir dibatalkan, file tetap aman di Staging!`;
+        setTimeout(renderZones, 280);
+      }
+    }
+
+    // =========================================================================
+    // SECTION 6: SANDBOX POHON BRANCH & MERGE VS REBASE
+    // =========================================================================
+    let sandboxState = {};
+
+    function initSandbox() {
+      sandboxState = {
+        activeBranch: 'main',
+        hasFeature: true,
+        nextId: 4,
+        nodes: [
+          { id: 1, label: 'c1', branch: 'main', x: 90, y: 65 },
+          { id: 2, label: 'c2', branch: 'main', x: 200, y: 65 },
+          { id: 3, label: 'f1', branch: 'feature', x: 310, y: 155 }
+        ],
+        edges: [
+          { from: 1, to: 2, color: '#10b981' },
+          { from: 2, to: 3, color: '#a855f7' }
+        ],
+        mainHead: 2,
+        featureHead: 3
+      };
+    }
+
+    function renderSandbox() {
+      const svg = document.getElementById('sandbox-svg');
+      const { nodes, edges, activeBranch, mainHead, featureHead, hasFeature } = sandboxState;
+      const maxX = Math.max(840, ...nodes.map(n => n.x + 140));
+      svg.setAttribute('viewBox', `0 0 ${maxX} 230`);
+
+      let html = `
+        <text x="18" y="69" fill="#10b981" font-family="JetBrains Mono" font-size="12" font-weight="700">main</text>
+        <line x1="72" y1="65" x2="${maxX - 30}" y2="65" stroke="#10b981" stroke-opacity="0.12" stroke-width="2" stroke-dasharray="4 4"/>
+      `;
+      if (hasFeature) {
+        html += `
+          <text x="12" y="159" fill="#a855f7" font-family="JetBrains Mono" font-size="12" font-weight="700">feature</text>
+          <line x1="72" y1="155" x2="${maxX - 30}" y2="155" stroke="#a855f7" stroke-opacity="0.12" stroke-width="2" stroke-dasharray="4 4"/>
+        `;
+      }
+
+      edges.forEach(e => {
+        const n1 = nodes.find(n => n.id === e.from);
+        const n2 = nodes.find(n => n.id === e.to);
+        if (!n1 || !n2) return;
+        if (n1.y === n2.y) {
+          html += `<line x1="${n1.x}" y1="${n1.y}" x2="${n2.x}" y2="${n2.y}" stroke="${e.color}" stroke-width="3.5" stroke-linecap="round"/>`;
+        } else {
+          const midX = (n1.x + n2.x) / 2;
+          html += `<path d="M ${n1.x} ${n1.y} C ${midX} ${n1.y}, ${midX} ${n2.y}, ${n2.x} ${n2.y}" fill="none" stroke="${e.color}" stroke-width="3" stroke-linecap="round"/>`;
+        }
+      });
+
+      nodes.forEach(n => {
+        const stroke = n.branch === 'main' ? '#10b981' : '#a855f7';
+        const isHeadNode = (activeBranch === 'main' && n.id === mainHead) || (activeBranch === 'feature' && n.id === featureHead);
+
+        html += `
+          <g>
+            ${isHeadNode ? `<circle cx="${n.x}" cy="${n.y}" r="17" fill="#06b6d4" fill-opacity="0.25" class="node-ring"/>` : ''}
+            <circle cx="${n.x}" cy="${n.y}" r="14" fill="#090d16" stroke="${stroke}" stroke-width="${n.isMerge ? '4.5' : '3.5'}"/>
+            <text x="${n.x}" y="${n.y + 4}" text-anchor="middle" fill="#f8fafc" font-family="JetBrains Mono" font-size="11" font-weight="700">${n.label}</text>
+          </g>
+        `;
+
+        if (n.id === mainHead) {
+          const isH = activeBranch === 'main';
+          html += `
+            <rect x="${n.x - 34}" y="${n.y - 44}" width="68" height="20" rx="6" fill="${isH ? '#06b6d4' : '#10b981'}"/>
+            <text x="${n.x}" y="${n.y - 31}" text-anchor="middle" fill="#090d16" font-family="JetBrains Mono" font-size="10" font-weight="800">${isH ? 'HEAD→main' : 'main'}</text>
+          `;
+        }
+        if (hasFeature && n.id === featureHead) {
+          const isH = activeBranch === 'feature';
+          html += `
+            <rect x="${n.x - 38}" y="${n.y + 22}" width="76" height="20" rx="6" fill="${isH ? '#06b6d4' : '#a855f7'}"/>
+            <text x="${n.x}" y="${n.y + 35}" text-anchor="middle" fill="${isH ? '#090d16' : '#ffffff'}" font-family="JetBrains Mono" font-size="10" font-weight="800">${isH ? 'HEAD→feat' : 'feature'}</text>
+          `;
+        }
+      });
+
+      svg.innerHTML = html;
+      const badge = document.getElementById('sandbox-active-branch');
+      badge.textContent = activeBranch;
+      badge.className = activeBranch === 'main'
+        ? 'px-3 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-mono text-xs font-bold'
+        : 'px-3 py-1 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/40 font-mono text-xs font-bold';
+    }
+
+    function sandboxCommit() {
+      const { activeBranch, nodes, edges, mainHead, featureHead, nextId } = sandboxState;
+      const newX = Math.max(...nodes.map(n => n.x)) + 105;
+      const newY = activeBranch === 'main' ? 65 : 155;
+      const parent = activeBranch === 'main' ? mainHead : featureHead;
+      const prefix = activeBranch === 'main' ? 'c' : 'f';
+
+      nodes.push({ id: nextId, label: `${prefix}${nextId}`, branch: activeBranch, x: newX, y: newY });
+      edges.push({ from: parent, to: nextId, color: activeBranch === 'main' ? '#10b981' : '#a855f7' });
+
+      if (activeBranch === 'main') sandboxState.mainHead = nextId;
+      else sandboxState.featureHead = nextId;
+      sandboxState.nextId++;
+
+      document.getElementById('sandbox-narrator').innerHTML = `Commit baru <code class="text-cyan-400 font-mono">${prefix}${nextId}</code> dibuat di branch <code class="font-mono font-bold">${activeBranch}</code>.`;
+      renderSandbox();
+    }
+
+    function sandboxCreateFeature() {
+      sandboxState.hasFeature = true;
+      sandboxState.activeBranch = 'feature';
+      document.getElementById('sandbox-narrator').innerHTML = `Berpindah ke branch <code class="text-purple-400 font-mono">feature</code>. Klik <strong>+ Commit Baru</strong> untuk menambah perubahan di cabang ini!`;
+      renderSandbox();
+    }
+
+    function sandboxSwitch() {
+      sandboxState.activeBranch = sandboxState.activeBranch === 'main' ? 'feature' : 'main';
+      document.getElementById('sandbox-narrator').innerHTML = `Pointer <strong>HEAD</strong> berpindah ke <code class="text-cyan-400 font-mono">${sandboxState.activeBranch}</code> (<code class="font-mono">git switch ${sandboxState.activeBranch}</code>).`;
+      renderSandbox();
+    }
+
+    function sandboxMerge() {
+      sandboxState.activeBranch = 'main';
+      const newX = Math.max(...sandboxState.nodes.map(n => n.x)) + 105;
+      const newId = sandboxState.nextId++;
+
+      sandboxState.nodes.push({ id: newId, label: `M${newId}`, branch: 'main', x: newX, y: 65, isMerge: true });
+      sandboxState.edges.push({ from: sandboxState.mainHead, to: newId, color: '#10b981' });
+      sandboxState.edges.push({ from: sandboxState.featureHead, to: newId, color: '#a855f7' });
+      sandboxState.mainHead = newId;
+
+      document.getElementById('sandbox-narrator').innerHTML = `<strong class="text-emerald-400">🔗 Git Merge (--no-ff):</strong> Tercipta diamond commit <code class="font-mono">M${newId}</code> dengan 2 jalur induk (<code class="font-mono">main</code> &amp; <code class="font-mono">feature</code>).`;
+      renderSandbox();
+    }
+
+    function sandboxRebase() {
+      const featureNodes = sandboxState.nodes.filter(n => n.branch === 'feature');
+      if (!featureNodes.length) {
+        showToast('Tambahkan commit di branch feature terlebih dahulu!', 'info');
+        return;
+      }
+      const featureIds = new Set(featureNodes.map(n => n.id));
+      sandboxState.nodes = sandboxState.nodes.filter(n => !featureIds.has(n.id));
+      sandboxState.edges = sandboxState.edges.filter(e => !featureIds.has(e.from) && !featureIds.has(e.to));
+
+      let parent = sandboxState.mainHead;
+      let curX = sandboxState.nodes.find(n => n.id === parent).x;
+
+      featureNodes.forEach((fn, i) => {
+        const nid = sandboxState.nextId++;
+        curX += 105;
+        sandboxState.nodes.push({ id: nid, label: `${fn.label}'`, branch: 'feature', x: curX, y: 155 });
+        sandboxState.edges.push({ from: parent, to: nid, color: i === 0 ? '#06b6d4' : '#a855f7' });
+        parent = nid;
+      });
+
+      sandboxState.featureHead = parent;
+      sandboxState.activeBranch = 'feature';
+      document.getElementById('sandbox-narrator').innerHTML = `<strong class="text-purple-400">⚡ Git Rebase:</strong> Seluruh commit <code class="font-mono">feature</code> dipindahkan ke ujung terbaru <code class="font-mono">main</code> sehingga sejarah lurus mulus!`;
+      renderSandbox();
+    }
+
+    function sandboxCherryPick() {
+      const featureNodes = sandboxState.nodes.filter(n => n.branch === 'feature');
+      if (!featureNodes.length) {
+        showToast('Tidak ada commit di feature untuk di-cherry-pick!', 'info');
+        return;
+      }
+      const target = featureNodes[featureNodes.length - 1];
+      sandboxState.activeBranch = 'main';
+      const newX = Math.max(...sandboxState.nodes.map(n => n.x)) + 105;
+      const newId = sandboxState.nextId++;
+
+      sandboxState.nodes.push({ id: newId, label: `${target.label}*`, branch: 'main', x: newX, y: 65 });
+      sandboxState.edges.push({ from: sandboxState.mainHead, to: newId, color: '#f59e0b' });
+      sandboxState.mainHead = newId;
+
+      document.getElementById('sandbox-narrator').innerHTML = `<strong class="text-amber-400">🍒 Cherry-Pick:</strong> Commit <code class="font-mono">${target.label}</code> dipetik secara spesifik ke <code class="font-mono">main</code> (<code class="font-mono">${target.label}*</code>).`;
+      renderSandbox();
+    }
+
+    function sandboxReset() {
+      initSandbox();
+      renderSandbox();
+      showToast('Graf branch di-reset ke awal.');
+    }
+
+    // =========================================================================
+    // SECTION 7: KAMUS PERINTAH GIT LENGKAP (40 PERINTAH)
+    // =========================================================================
+    let dictLevel = 'all';
+    let dictSearch = '';
+
+    function renderDictionary() {
+      const grid = document.getElementById('commands-grid');
+      const emptyBox = document.getElementById('empty-search');
+      const countBadge = document.getElementById('dict-count-badge');
+
+      const q = dictSearch.toLowerCase().trim();
+      const filtered = GIT_COMMANDS.filter(item => {
+        const matchLvl = dictLevel === 'all' || item.level === dictLevel;
+        const matchText = !q ||
+          item.cmd.toLowerCase().includes(q) ||
+          item.analogy.toLowerCase().includes(q) ||
+          item.desc.toLowerCase().includes(q) ||
+          item.tip.toLowerCase().includes(q);
+        return matchLvl && matchText;
+      });
+
+      countBadge.textContent = `Menampilkan ${filtered.length} dari ${GIT_COMMANDS.length} perintah`;
+
+      if (!filtered.length) {
+        grid.innerHTML = '';
+        emptyBox.classList.remove('hidden');
+        return;
+      }
+      emptyBox.classList.add('hidden');
+
+      const lvlStyle = {
+        'Pemula': 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+        'Menengah': 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30',
+        'Sepuh': 'bg-purple-500/15 text-purple-300 border-purple-500/30',
+        'Dewa Krisis': 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+      };
+
+      const safetyStyle = {
+        'Aman': 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+        'Hati-hati': 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+        'Berbahaya': 'bg-rose-500/15 text-rose-300 border-rose-500/30'
+      };
+
+      grid.innerHTML = filtered.map(item => {
+        const encoded = encodeURIComponent(item.code);
+        return `
+          <article class="card-lift rounded-3xl glass-card p-5 sm:p-6 flex flex-col justify-between">
+            <div>
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full border ${lvlStyle[item.level]}">${item.level}</span>
+                  <span class="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full border ${safetyStyle[item.safety]}">${item.safety}</span>
+                </div>
+              </div>
+
+              <h3 class="text-lg sm:text-xl font-extrabold font-mono text-white tracking-tight">${item.cmd}</h3>
+              <div class="text-xs text-amber-300/90 italic mt-0.5 mb-2.5 flex items-center gap-1.5">
+                <i data-lucide="lightbulb" class="w-3.5 h-3.5 shrink-0"></i>
+                <span>Analogi: "${item.analogy}"</span>
+              </div>
+
+              <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">${item.desc}</p>
+            </div>
+
+            <div class="space-y-3">
+              <div class="rounded-2xl bg-[#05080f] border border-[#1e293b] overflow-hidden">
+                <div class="flex items-center justify-between px-3.5 py-2 bg-[#0d1320] border-b border-[#1e293b]">
+                  <span class="text-[11px] font-mono text-slate-500">contoh sintaks</span>
+                  <button
+                    onclick="copyTextToClipboard(this, '${encoded}')"
+                    class="flex items-center gap-1 text-[11px] font-mono px-2.5 py-1 rounded-lg bg-[#111827] hover:bg-slate-800 text-slate-300 border border-[#1e293b] transition cursor-pointer"
+                  >
+                    <i data-lucide="copy" class="w-3 h-3"></i>
+                    <span>Salin</span>
+                  </button>
+                </div>
+                <pre class="p-3.5 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">${item.code}</pre>
+              </div>
+
+              <div class="flex items-start gap-2 text-xs text-slate-400 bg-[#090d16]/70 p-3 rounded-2xl border border-[#1e293b]">
+                <i data-lucide="sparkles" class="w-4 h-4 text-purple-400 shrink-0 mt-0.5"></i>
+                <span><strong class="text-purple-300">Tips Sepuh:</strong> ${item.tip}</span>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    document.querySelectorAll('.dict-lvl-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.dict-lvl-btn').forEach(b => {
+          b.className = 'dict-lvl-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-[#1e293b] hover:border-emerald-500/40 transition cursor-pointer';
+        });
+        btn.className = 'dict-lvl-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-500 text-[#090d16] transition cursor-pointer';
+        dictLevel = btn.getAttribute('data-lvl');
+        renderDictionary();
+      });
+    });
+
+    document.getElementById('command-search').addEventListener('input', e => {
+      dictSearch = e.target.value;
+      renderDictionary();
+    });
+
+    // =========================================================================
+    // SECTION 8: MODAL / DRAWER "🚨 TOMBOL PANIK!" (8 SKENARIO)
+    // =========================================================================
+    let activePanicDrawerId = PANIC_DRAWER_ITEMS[0].id;
+
+    function openPanicDrawer() {
+      document.getElementById('mobile-menu').classList.add('hidden');
+      const overlay = document.getElementById('panic-drawer-overlay');
+      const panel = document.getElementById('panic-drawer-panel');
+      overlay.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        panel.classList.remove('translate-x-full');
+      });
+      renderPanicDrawer();
+    }
+
+    function closePanicDrawer() {
+      const overlay = document.getElementById('panic-drawer-overlay');
+      const panel = document.getElementById('panic-drawer-panel');
+      panel.classList.add('translate-x-full');
+      setTimeout(() => {
+        overlay.classList.add('hidden');
+      }, 300);
+    }
+
+    function selectPanicDrawerItem(id) {
+      activePanicDrawerId = id;
+      renderPanicDrawer();
+    }
+
+    function renderPanicDrawer() {
+      const tabsEl = document.getElementById('panic-drawer-tabs');
+      const guideEl = document.getElementById('panic-drawer-guide');
+
+      tabsEl.innerHTML = PANIC_DRAWER_ITEMS.map(item => {
+        const isSel = item.id === activePanicDrawerId;
+        return `
+          <button
+            onclick="selectPanicDrawerItem('${item.id}')"
+            class="text-left p-3 rounded-2xl border transition flex items-center gap-2.5 cursor-pointer ${
+              isSel
+                ? 'bg-rose-500/20 border-rose-500/60 text-white'
+                : 'bg-[#111827] border-[#1e293b] text-slate-300 hover:border-slate-700'
+            }"
+          >
+            <span class="text-xl shrink-0">${item.emoji}</span>
+            <span class="text-xs font-bold leading-snug">${item.short}</span>
+          </button>
+        `;
+      }).join('');
+
+      const active = PANIC_DRAWER_ITEMS.find(p => p.id === activePanicDrawerId) || PANIC_DRAWER_ITEMS[0];
+      guideEl.innerHTML = `
+        <div class="pb-3 border-b border-[#1e293b]">
+          <div class="text-[11px] font-mono uppercase tracking-wider text-emerald-400 font-bold">Protokol Penyelamatan:</div>
+          <h3 class="text-base font-extrabold text-white mt-0.5">${active.emoji} ${active.title}</h3>
+        </div>
+        <div class="space-y-3">
+          ${active.steps.map(st => {
+            const encoded = encodeURIComponent(st.code);
+            return `
+              <div class="p-3.5 rounded-2xl bg-[#090d16] border border-[#1e293b] space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-xs font-bold text-emerald-400">${st.title}</span>
+                  <button
+                    onclick="copyTextToClipboard(this, '${encoded}')"
+                    class="flex items-center gap-1 text-[11px] font-mono px-2 py-1 rounded-lg bg-[#111827] hover:bg-slate-800 text-slate-300 border border-[#1e293b] cursor-pointer shrink-0"
+                  >
+                    <i data-lucide="copy" class="w-3 h-3"></i> Salin
+                  </button>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">${st.desc}</p>
+                <pre class="p-2.5 rounded-xl bg-[#05080f] border border-[#1e293b] text-xs font-mono text-cyan-300 overflow-x-auto">${st.code}</pre>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      lucide.createIcons();
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closePanicDrawer();
+    });
+
+    // =========================================================================
+    // INITIALIZATION
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      renderErrorScenarioList();
+      renderActiveErrorWorkspace();
+      runForceDuel('reset');
+      renderFlagsGrid();
+      renderZones();
+      initSandbox();
+      renderSandbox();
+      renderDictionary();
+      renderPanicDrawer();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
